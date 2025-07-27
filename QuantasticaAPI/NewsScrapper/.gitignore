@@ -1,0 +1,18 @@
+# Python virtual environment
+venv/
+.venv/
+
+# Byte-compiled files
+__pycache__/
+
+nohup.out
+
+# Other common Python temporary files and IDE files
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+.env
+
+

@@ -1,0 +1,79 @@
+Traceback (most recent call last):
+  File "/home/utkarshr_ug22_cs/QuantasticaAPI/PersonalFinancePrediction/financial_api_server.py", line 7, in <module>
+    from flask_cors import CORS
+ModuleNotFoundError: No module named 'flask_cors'
+✅ Models and data loaded successfully!
+Available users: [np.int64(1010101010), np.int64(1212121212), np.int64(1313131313), np.int64(1414141414), np.int64(2020202020), np.int64(2121212121), np.int64(2222222222), np.int64(2525252525), np.int64(3333333333), np.int64(4444444444), np.int64(5555555555), np.int64(7777777777), np.int64(8888888888), np.int64(9999999999)]
+🚀 Starting Financial Prediction API...
+📊 Available endpoints:
+  GET  /users - Get all user IDs
+  GET  /transactions/<user_id> - Get user transactions
+  GET  /user/<user_id>/profile - Get user profile
+  POST /predict/expenditure - Predict expenditure
+  POST /predict/savings - Predict savings
+  POST /predict/both - Predict both
+
+ * Serving Flask app 'financial_api_server'
+ * Debug mode: on
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://10.128.0.2:5001
+[33mPress CTRL+C to quit[0m
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 489-671-985
+103.75.81.56 - - [24/Jul/2025 16:34:17] "GET /transactions/1010101010 HTTP/1.1" 200 -
+103.75.81.56 - - [24/Jul/2025 16:34:47] "GET /user/1010101010/profile HTTP/1.1" 200 -
+103.75.81.56 - - [24/Jul/2025 16:34:59] "OPTIONS /predict/savings HTTP/1.1" 200 -
+/home/utkarshr_ug22_cs/QuantasticaAPI/PersonalFinancePrediction/.venv/lib/python3.11/site-packages/sklearn/utils/validation.py:2749: UserWarning: X does not have valid feature names, but StandardScaler was fitted with feature names
+  warnings.warn(
+103.75.81.56 - - [24/Jul/2025 16:35:00] "POST /predict/savings HTTP/1.1" 200 -
+103.75.81.56 - - [24/Jul/2025 16:35:42] "GET /transactions/1010101010 HTTP/1.1" 200 -
+ * Detected change in '/home/utkarshr_ug22_cs/QuantasticaAPI/PersonalFinancePrediction/financial_api_server.py', reloading
+✅ Models and data loaded successfully!
+Available users: [np.int64(1010101010), np.int64(1212121212), np.int64(1313131313), np.int64(1414141414), np.int64(2020202020), np.int64(2121212121), np.int64(2222222222), np.int64(2525252525), np.int64(3333333333), np.int64(4444444444), np.int64(5555555555), np.int64(7777777777), np.int64(8888888888), np.int64(9999999999)]
+🚀 Starting Financial Prediction API...
+📊 Available endpoints:
+  GET  /users - Get all user IDs
+  GET  /transactions/<user_id> - Get user transactions
+  GET  /user/<user_id>/profile - Get user profile
+  POST /predict/expenditure - Predict expenditure
+  POST /predict/savings - Predict savings
+  POST /predict/both - Predict both
+
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 489-671-985
+ * Detected change in '/home/utkarshr_ug22_cs/QuantasticaAPI/PersonalFinancePrediction/financial_api_server.py', reloading
+✅ Models and data loaded successfully!
+Available users: [np.int64(1010101010), np.int64(1212121212), np.int64(1313131313), np.int64(1414141414), np.int64(2020202020), np.int64(2121212121), np.int64(2222222222), np.int64(2525252525), np.int64(3333333333), np.int64(4444444444), np.int64(5555555555), np.int64(7777777777), np.int64(8888888888), np.int64(9999999999)]
+🚀 Starting Financial Prediction API...
+📊 Available endpoints:
+  GET  /users - Get all user IDs
+  GET  /transactions/<user_id> - Get user transactions
+  GET  /user/<user_id>/profile - Get user profile
+  POST /predict/expenditure - Predict expenditure
+  POST /predict/savings - Predict savings
+  POST /predict/both - Predict both
+
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 489-671-985
+ * Detected change in '/home/utkarshr_ug22_cs/QuantasticaAPI/PersonalFinancePrediction/financial_api_server.py', reloading
+✅ Models and data loaded successfully!
+Available users: [np.int64(1010101010), np.int64(1212121212), np.int64(1313131313), np.int64(1414141414), np.int64(2020202020), np.int64(2121212121), np.int64(2222222222), np.int64(2525252525), np.int64(3333333333), np.int64(4444444444), np.int64(5555555555), np.int64(7777777777), np.int64(8888888888), np.int64(9999999999)]
+🚀 Starting Financial Prediction API...
+📊 Available endpoints:
+  GET  /users - Get all user IDs
+  GET  /transactions/<user_id> - Get user transactions
+  GET  /user/<user_id>/profile - Get user profile
+  POST /predict/expenditure - Predict expenditure
+  POST /predict/savings - Predict savings
+  POST /predict/both - Predict both
+
+ * Restarting with stat
+  File "/home/utkarshr_ug22_cs/QuantasticaAPI/PersonalFinancePrediction/financial_api_server.py", line 10
+    <<<<<<< Updated upstream
+    ^^
+SyntaxError: invalid syntax

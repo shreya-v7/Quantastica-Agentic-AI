@@ -1,0 +1,620 @@
+  [
+	{
+    "symbol": "AAPL",
+    "date": "2025-07-25",
+    "price": 229.42,
+    "52_week_high": 237.16,
+    "52_week_low": 164.08,
+    "technical_indicators": {
+      "sma": {
+        "period": 50,
+        "value": 224.87,
+        "status": "above"
+      },
+      "ema": {
+        "period": 50,
+        "value": 226.58,
+        "status": "above"
+      },
+      "rsi": {
+        "period": 14,
+        "value": 61.2,
+        "zone": "neutral"
+      },
+      "macd": {
+        "value": 1.31,
+        "trend": "bullish"
+      },
+      "bollinger_bands": {
+        "note": "Price at upper band, volatility expanding",
+        "volatility_range": "wide"
+      },
+      "stochastic_oscillator": {
+        "period": 20,
+        "value": 84.9,
+        "zone": "overbought"
+      },
+      "adx": {
+        "period": 14,
+        "value": 25.4,
+        "trend_strength": "moderate"
+      },
+      "cci": {
+        "period": 20,
+        "value": 99.4,
+        "zone": "overbought"
+      },
+      "williams_r": {
+        "period": 14,
+        "value": -8.3,
+        "zone": "overbought"
+      },
+      "obv": null,
+      "mfi": null
+    },
+    "summary": {
+      "momentum": "strong",
+      "trend": "uptrend, but overbought signals",
+      "notes": [
+        "Price is above both 50-day SMA and EMA",
+        "MACD bullish, widespread momentum",
+        "RSI above 60 but not extreme",
+        "Stochastic, CCI, and Williams %R are overbought",
+        "ADX shows moderate trend strength"
+      ]
+    }
+  },
+  {
+    "symbol": "MSFT",
+    "date": "2025-07-25",
+    "price": 468.81,
+    "52_week_high": 478.99,
+    "52_week_low": 309.45,
+    "technical_indicators": {
+      "sma": {
+        "period": 50,
+        "value": 454.30,
+        "status": "above"
+      },
+      "ema": {
+        "period": 50,
+        "value": 459.05,
+        "status": "above"
+      },
+      "rsi": {
+        "period": 14,
+        "value": 58.0,
+        "zone": "neutral"
+      },
+      "macd": {
+        "value": 0.62,
+        "trend": "bullish"
+      },
+      "bollinger_bands": {
+        "note": "Price trending above mid-band, normal range",
+        "volatility_range": "normal"
+      },
+      "stochastic_oscillator": {
+        "period": 20,
+        "value": 78.8,
+        "zone": "bullish"
+      },
+      "adx": {
+        "period": 14,
+        "value": 23.7,
+        "trend_strength": "moderate"
+      },
+      "cci": {
+        "period": 20,
+        "value": 63.5,
+        "zone": "bullish"
+      },
+      "williams_r": {
+        "period": 14,
+        "value": -22.4,
+        "zone": "neutral"
+      },
+      "obv": null,
+      "mfi": null
+    },
+    "summary": {
+      "momentum": "bullish",
+      "trend": "stable uptrend",
+      "notes": [
+        "Price above key moving averages",
+        "MACD and Stochastic confirm trend",
+        "Moderate RSI, not overextended",
+        "ADX moderate but rising"
+      ]
+    }
+  },
+  {
+    "symbol": "NVDA",
+    "date": "2025-07-25",
+    "price": 1228.34,
+    "52_week_high": 1345.67,
+    "52_week_low": 433.20,
+    "technical_indicators": {
+      "sma": {
+        "period": 50,
+        "value": 1219.22,
+        "status": "above"
+      },
+      "ema": {
+        "period": 50,
+        "value": 1221.10,
+        "status": "above"
+      },
+      "rsi": {
+        "period": 14,
+        "value": 54.2,
+        "zone": "neutral"
+      },
+      "macd": {
+        "value": -9.23,
+        "trend": "bearish"
+      },
+      "bollinger_bands": {
+        "note": "Price at middle range, volatility declining",
+        "volatility_range": "narrow"
+      },
+      "stochastic_oscillator": {
+        "period": 20,
+        "value": 49.8,
+        "zone": "neutral"
+      },
+      "adx": {
+        "period": 14,
+        "value": 17.5,
+        "trend_strength": "weak"
+      },
+      "cci": {
+        "period": 20,
+        "value": 8.6,
+        "zone": "neutral"
+      },
+      "williams_r": {
+        "period": 14,
+        "value": -52.3,
+        "zone": "neutral"
+      },
+      "obv": null,
+      "mfi": null
+    },
+    "summary": {
+      "momentum": "neutral",
+      "trend": "sideways/weak",
+      "notes": [
+        "Price slightly above averages, but MACD negative",
+        "RSI very neutral",
+        "Low ADX: no strong trend"
+      ]
+    }
+  },
+  {
+    "symbol": "AMZN",
+    "date": "2025-07-25",
+    "price": 209.46,
+    "52_week_high": 212.82,
+    "52_week_low": 118.35,
+    "technical_indicators": {
+      "sma": {
+        "period": 50,
+        "value": 207.61,
+        "status": "above"
+      },
+      "ema": {
+        "period": 50,
+        "value": 208.01,
+        "status": "above"
+      },
+      "rsi": {
+        "period": 14,
+        "value": 57.2,
+        "zone": "neutral"
+      },
+      "macd": {
+        "value": 0.67,
+        "trend": "bullish"
+      },
+      "bollinger_bands": {
+        "note": "Price hugging upper band, volatility normal",
+        "volatility_range": "normal"
+      },
+      "stochastic_oscillator": {
+        "period": 20,
+        "value": 84.1,
+        "zone": "overbought"
+      },
+      "adx": {
+        "period": 14,
+        "value": 24.0,
+        "trend_strength": "moderate"
+      },
+      "cci": {
+        "period": 20,
+        "value": 117.7,
+        "zone": "overbought"
+      },
+      "williams_r": {
+        "period": 14,
+        "value": -14.3,
+        "zone": "overbought"
+      },
+      "obv": null,
+      "mfi": null
+    },
+    "summary": {
+      "momentum": "strong",
+      "trend": "uptrend, but at overbought",
+      "notes": [
+        "Price above both 50-day SMA and EMA",
+        "MACD positive, but stochastic and CCI show overbought",
+        "ADX moderate"
+      ]
+    }
+  },
+  {
+    "symbol": "META",
+    "date": "2025-07-25",
+    "price": 552.29,
+    "52_week_high": 567.43,
+    "52_week_low": 274.38,
+    "technical_indicators": {
+      "sma": {
+        "period": 50,
+        "value": 537.80,
+        "status": "above"
+      },
+      "ema": {
+        "period": 50,
+        "value": 545.14,
+        "status": "above"
+      },
+      "rsi": {
+        "period": 14,
+        "value": 60.7,
+        "zone": "neutral"
+      },
+      "macd": {
+        "value": 1.99,
+        "trend": "bullish"
+      },
+      "bollinger_bands": {
+        "note": "Price at upper band, volatility moderate",
+        "volatility_range": "normal"
+      },
+      "stochastic_oscillator": {
+        "period": 20,
+        "value": 81.6,
+        "zone": "overbought"
+      },
+      "adx": {
+        "period": 14,
+        "value": 29.1,
+        "trend_strength": "strong"
+      },
+      "cci": {
+        "period": 20,
+        "value": 115.0,
+        "zone": "overbought"
+      },
+      "williams_r": {
+        "period": 14,
+        "value": -7.1,
+        "zone": "overbought"
+      },
+      "obv": null,
+      "mfi": null
+    },
+    "summary": {
+      "momentum": "strong",
+      "trend": "bullish, but overbought",
+      "notes": [
+        "Above all key averages",
+        "RSI and MACD strong",
+        "Stochastic, CCI, Williams %R overbought",
+        "ADX strong trend"
+      ]
+    }
+  },
+  {
+    "symbol": "GOOGL",
+    "date": "2025-07-25",
+    "price": 209.62,
+    "52_week_high": 213.23,
+    "52_week_low": 120.57,
+    "technical_indicators": {
+      "sma": {
+        "period": 50,
+        "value": 204.63,
+        "status": "above"
+      },
+      "ema": {
+        "period": 50,
+        "value": 206.27,
+        "status": "above"
+      },
+      "rsi": {
+        "period": 14,
+        "value": 59.8,
+        "zone": "neutral"
+      },
+      "macd": {
+        "value": 0.61,
+        "trend": "bullish"
+      },
+      "bollinger_bands": {
+        "note": "Price moving near upper band",
+        "volatility_range": "normal"
+      },
+      "stochastic_oscillator": {
+        "period": 20,
+        "value": 80.9,
+        "zone": "overbought"
+      },
+      "adx": {
+        "period": 14,
+        "value": 23.2,
+        "trend_strength": "moderate"
+      },
+      "cci": {
+        "period": 20,
+        "value": 104.4,
+        "zone": "overbought"
+      },
+      "williams_r": {
+        "period": 14,
+        "value": -12.6,
+        "zone": "overbought"
+      },
+      "obv": null,
+      "mfi": null
+    },
+    "summary": {
+      "momentum": "bullish",
+      "trend": "uptrend with overbought signals",
+      "notes": [
+        "Stochastic, Williams %R, CCI all suggest overbought",
+        "Trend remains up"
+      ]
+    }
+  },
+  {
+    "symbol": "BRK.B",
+    "date": "2025-07-25",
+    "price": 441.95,
+    "52_week_high": 445.90,
+    "52_week_low": 340.16,
+    "technical_indicators": {
+      "sma": {
+        "period": 50,
+        "value": 433.81,
+        "status": "above"
+      },
+      "ema": {
+        "period": 50,
+        "value": 437.04,
+        "status": "above"
+      },
+      "rsi": {
+        "period": 14,
+        "value": 67.5,
+        "zone": "overbought"
+      },
+      "macd": {
+        "value": 1.61,
+        "trend": "bullish"
+      },
+      "bollinger_bands": {
+        "note": "Price at upper band, moderate volatility",
+        "volatility_range": "normal"
+      },
+      "stochastic_oscillator": {
+        "period": 20,
+        "value": 87.2,
+        "zone": "overbought"
+      },
+      "adx": {
+        "period": 14,
+        "value": 33.2,
+        "trend_strength": "strong"
+      },
+      "cci": {
+        "period": 20,
+        "value": 150.7,
+        "zone": "overbought"
+      },
+      "williams_r": {
+        "period": 14,
+        "value": -3.6,
+        "zone": "overbought"
+      },
+      "obv": null,
+      "mfi": null
+    },
+    "summary": {
+      "momentum": "very strong",
+      "trend": "extended uptrend, strongly overbought",
+      "notes": [
+        "All momentum indicators are overbought",
+        "Price exceeds both averages",
+        "ADX shows very strong trend"
+      ]
+    }
+  },
+  {
+    "symbol": "TSLA",
+    "date": "2025-07-25",
+    "price": 316.06,
+    "52_week_high": 488.54,
+    "52_week_low": 182.0,
+    "technical_indicators": {
+      "sma": {
+        "period": 50,
+        "value": 321.78,
+        "status": "below"
+      },
+      "ema": {
+        "period": 50,
+        "value": 319.13,
+        "status": "below"
+      },
+      "rsi": {
+        "period": 14,
+        "value": 46.5,
+        "zone": "neutral"
+      },
+      "macd": {
+        "value": -1.09,
+        "trend": "bearish"
+      },
+      "bollinger_bands": {
+        "note": "Price near lower end of range",
+        "volatility_range": "wide"
+      },
+      "stochastic_oscillator": null,
+      "adx": null,
+      "cci": null,
+      "williams_r": null,
+      "obv": null,
+      "mfi": null
+    },
+    "summary": {
+      "momentum": "mixed",
+      "trend": "short-term weakness",
+      "notes": [
+        "Price is below both SMA and EMA",
+        "MACD is negative, indicating bearish momentum",
+        "RSI is neutral at 46.5"
+      ]
+    }
+  },
+  {
+    "symbol": "AVGO",
+    "date": "2025-07-25",
+    "price": 1981.56,
+    "52_week_high": 2035.43,
+    "52_week_low": 734.07,
+    "technical_indicators": {
+      "sma": {
+        "period": 50,
+        "value": 1933.20,
+        "status": "above"
+      },
+      "ema": {
+        "period": 50,
+        "value": 1958.84,
+        "status": "above"
+      },
+      "rsi": {
+        "period": 14,
+        "value": 63.1,
+        "zone": "neutral"
+      },
+      "macd": {
+        "value": 5.82,
+        "trend": "bullish"
+      },
+      "bollinger_bands": {
+        "note": "Price at upper band, broadening volatility",
+        "volatility_range": "wide"
+      },
+      "stochastic_oscillator": {
+        "period": 20,
+        "value": 94.2,
+        "zone": "overbought"
+      },
+      "adx": {
+        "period": 14,
+        "value": 36.7,
+        "trend_strength": "strong"
+      },
+      "cci": {
+        "period": 20,
+        "value": 141.0,
+        "zone": "overbought"
+      },
+      "williams_r": {
+        "period": 14,
+        "value": -2.3,
+        "zone": "overbought"
+      },
+      "obv": null,
+      "mfi": null
+    },
+    "summary": {
+      "momentum": "strong",
+      "trend": "uptrend, but severely overbought",
+      "notes": [
+        "Price at or near record highs",
+        "Multiple overbought readings",
+        "ADX very strong"
+      ]
+    }
+  },
+  {
+    "symbol": "JPM",
+    "date": "2025-07-25",
+    "price": 195.96,
+    "52_week_high": 200.37,
+    "52_week_low": 135.19,
+    "technical_indicators": {
+      "sma": {
+        "period": 50,
+        "value": 192.87,
+        "status": "above"
+      },
+      "ema": {
+        "period": 50,
+        "value": 194.55,
+        "status": "above"
+      },
+      "rsi": {
+        "period": 14,
+        "value": 62.8,
+        "zone": "neutral"
+      },
+      "macd": {
+        "value": 0.82,
+        "trend": "bullish"
+      },
+      "bollinger_bands": {
+        "note": "Price above mid-band with rising volatility",
+        "volatility_range": "normal"
+      },
+      "stochastic_oscillator": {
+        "period": 20,
+        "value": 81.7,
+        "zone": "overbought"
+      },
+      "adx": {
+        "period": 14,
+        "value": 29.3,
+        "trend_strength": "strong"
+      },
+      "cci": {
+        "period": 20,
+        "value": 127.5,
+        "zone": "overbought"
+      },
+      "williams_r": {
+        "period": 14,
+        "value": -10.0,
+        "zone": "overbought"
+      },
+      "obv": null,
+      "mfi": null
+    },
+    "summary": {
+      "momentum": "strong",
+      "trend": "uptrend, but overbought",
+      "notes": [
+        "Price above both 50-day SMA and EMA",
+        "MACD and momentum bullish",
+        "Stochastic Oscillator, CCI, Williams %R: overbought",
+        "ADX strong trend"
+      ]
+    }
+  }
+]
