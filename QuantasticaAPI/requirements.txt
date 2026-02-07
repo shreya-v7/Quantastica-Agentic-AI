@@ -1,0 +1,44 @@
+# ===========================================================
+# Quantastica API - Python Dependencies
+# ===========================================================
+
+# --- Web Framework ---
+fastapi
+uvicorn
+
+# --- Configuration ---
+pydantic-settings
+python-dotenv
+
+# --- Google Cloud / Vertex AI / ADK ---
+google-auth
+google-cloud-speech
+google-cloud-storage
+google-cloud-aiplatform
+vertexai
+google-adk[database]==0.3.0
+google-generativeai==0.8.5
+
+# --- Firebase ---
+firebase-admin
+
+# --- Trading ---
+alpaca-py
+yfinance==0.2.56
+
+# --- Data / Analysis ---
+pandas
+pandas-ta
+matplotlib
+plotly
+kaleido
+
+# --- Messaging ---
+twilio
+flask
+flask-cors
+
+# --- Misc ---
+litellm==1.66.3
+psutil==5.9.5
+requests
