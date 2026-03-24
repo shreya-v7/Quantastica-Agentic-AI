@@ -1,8 +1,5 @@
-from alpaca.trading.client import TradingClient
-from ..config import API_KEY, SECRET_KEY
+from ..alpaca_client import get_trading_client
 from ..get_all_orders_agent.get_all_orders_tool import get_all_orders_for_symbol
-
-client = TradingClient(api_key=API_KEY, secret_key=SECRET_KEY, paper=True)
 
 
 def cancel_order_flow(symbol: str = None, order_id: str = None, user_confirmed: bool = False):
@@ -17,6 +14,11 @@ def cancel_order_flow(symbol: str = None, order_id: str = None, user_confirmed: 
     Returns:
         Dict with status, message, and optional order details.
     """
+    try:
+        client = get_trading_client()
+    except RuntimeError as e:
+        return {"status": "error", "message": str(e)}
+
     if not symbol and not order_id:
         return {
             "status": "clarify_input",

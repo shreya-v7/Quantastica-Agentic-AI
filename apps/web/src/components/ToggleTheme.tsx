@@ -13,7 +13,7 @@ export function ToggleTheme() {
       whileTap={{ scale: 0.96 }}
       whileHover={{ scale: 1.02 }}
       onClick={toggleTheme}
-      className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-card text-foreground shadow-sm transition-shadow hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+      className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-border/80 bg-card/90 text-foreground shadow-sm backdrop-blur-sm transition hover:border-primary/25 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
       aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
     >
       {isDark ? <Sun className="h-[1.15rem] w-[1.15rem]" /> : <Moon className="h-[1.15rem] w-[1.15rem]" />}

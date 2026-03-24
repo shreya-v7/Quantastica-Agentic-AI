@@ -1,4 +1,4 @@
-"""Pydantic API models — mirror `packages/types` (camelCase JSON)."""
+"""Pydantic API models  - mirror `packages/types` (camelCase JSON)."""
 
 from __future__ import annotations
 

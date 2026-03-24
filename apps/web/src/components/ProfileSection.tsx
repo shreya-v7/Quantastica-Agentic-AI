@@ -147,7 +147,7 @@ const ProfileCard = ({
   value: string | number;
 }) => (
   <div className="bg-white/5 backdrop-blur-sm p-5 rounded-2xl shadow-md hover:scale-[1.02] transition-all border border-white/10">
-    <div className="flex items-center gap-3 mb-2 text-gray-300">
+    <div className="flex items-center gap-3 mb-2 text-card-foreground">
       {icon}
       <span className="uppercase font-semibold tracking-wide">{label}</span>
     </div>

@@ -1,6 +1,8 @@
 import { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 import { AppLayout } from "./layout";
+import { RequireAuth } from "./RequireAuth";
+import DevSessionEntry from "./DevSessionEntry";
 
 const LandingPage = lazy(() => import("../components/LandingPage"));
 const AuthPage = lazy(() => import("../components/AuthPage"));
@@ -30,16 +32,87 @@ export function AppRouter() {
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/auth" element={<AuthPage />} />
-          <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/insights" element={<InsightsPage />} />
-          <Route path="/chat" element={<ChatPage />} />
-          <Route path="/news" element={<NewsAnalysisPage />} />
-          <Route path="/group-investments" element={<GroupInvestmentsPage />} />
-          <Route path="/finance-tracker" element={<FinanceTracker />} />
-          <Route path="/investments" element={<InvestmentsPage />} />
-          <Route path="/family-finance" element={<FamilyFinancePage />} />
-          <Route path="/finance-expense" element={<FinanceExpense />} />
-          <Route path="/trade-execution" element={<TradeExecution />} />
+          <Route path="/dev/session" element={<DevSessionEntry />} />
+          <Route
+            path="/dashboard"
+            element={
+              <RequireAuth>
+                <DashboardPage />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/insights"
+            element={
+              <RequireAuth>
+                <InsightsPage />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/chat"
+            element={
+              <RequireAuth>
+                <ChatPage />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/news"
+            element={
+              <RequireAuth>
+                <NewsAnalysisPage />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/group-investments"
+            element={
+              <RequireAuth>
+                <GroupInvestmentsPage />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/finance-tracker"
+            element={
+              <RequireAuth>
+                <FinanceTracker />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/investments"
+            element={
+              <RequireAuth>
+                <InvestmentsPage />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/family-finance"
+            element={
+              <RequireAuth>
+                <FamilyFinancePage />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/finance-expense"
+            element={
+              <RequireAuth>
+                <FinanceExpense />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/trade-execution"
+            element={
+              <RequireAuth>
+                <TradeExecution />
+              </RequireAuth>
+            }
+          />
         </Routes>
       </Suspense>
     </AppLayout>

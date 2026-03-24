@@ -106,7 +106,7 @@ useEffect(() => {
       <li key={txn.id} className="flex justify-between py-3">
         <div>
           <p className="font-medium text-white">{txn.category}</p>
-          <p className="text-sm text-gray-400">{new Date(txn.date).toDateString()}</p>
+          <p className="text-sm text-muted-foreground">{new Date(txn.date).toDateString()}</p>
         </div>
         <div className={`text-lg font-semibold ${txn.type === "investment" ? "text-red-500" : "text-green-400"}`}>
           ₹{txn.amount.toLocaleString()}
@@ -175,7 +175,7 @@ useEffect(() => {
   };
 
   return (
-    <div className="min-h-screen bg-darkBlue text-white p-6 sm:p-10 max-w-5xl mx-auto space-y-10 animate-fade-in">
+    <div className="min-h-screen bg-background text-foreground p-6 sm:p-10 max-w-5xl mx-auto space-y-10 animate-fade-in">
       <h1 className="text-4xl font-bold mb-6 flex items-center gap-3">
         <DollarSign className="w-8 h-8 text-accent" />
         Finance Tracker
@@ -188,13 +188,13 @@ useEffect(() => {
       </div>
 
       {/* Expense Categories */}
-      <section className="bg-[#161b22] p-6 rounded-2xl shadow-lg glass">
+      <section className="bg-card p-6 rounded-2xl shadow-lg glass">
         <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
           <BarChart2 className="w-6 h-6 text-accent" /> Expense Breakdown by Category
         </h2>
         <ul className="space-y-2">
           {Object.entries(expensesByCategory).map(([category, amount]) => (
-            <li key={category} className="flex justify-between border-b border-gray-700 py-2 hover:bg-accent/20 transition rounded-md px-2 cursor-pointer">
+            <li key={category} className="flex justify-between border-b border-border py-2 hover:bg-accent/20 transition rounded-md px-2 cursor-pointer">
               <span>{category}</span>
               <span>₹{amount.toLocaleString()}</span>
             </li>
@@ -202,7 +202,7 @@ useEffect(() => {
         </ul>
       </section>
 
-    <section className="bg-gradient-to-r from-accentBlue/50 to-accentPurple/30 p-6 rounded-2xl shadow-xl max-w-4xl mx-auto animate-slide-up text-center text-white">
+    <section className="rounded-2xl border border-border/60 bg-gradient-to-r from-primary/10 to-violet-500/10 p-6 shadow-xl max-w-4xl mx-auto animate-slide-up text-center text-foreground">
       <h2 className="text-3xl font-bold flex justify-center items-center gap-3 mb-6">
         <TrendingUp className="w-6 h-6 text-accent" />
         Forecast Summary – {getMonthName(predictionMonth)} {predictionYear}
@@ -210,22 +210,22 @@ useEffect(() => {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 text-lg font-medium">
       
-       <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 border border-gray-700 p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-default">
-  <p className="text-xs font-semibold uppercase text-gray-400 tracking-wide mb-1">Predicted Expenditure</p>
+       <div className="rounded-xl border border-border bg-card p-6 shadow-lg transition-shadow duration-300 hover:shadow-xl cursor-default">
+  <p className="text-xs font-semibold uppercase text-muted-foreground tracking-wide mb-1">Predicted Expenditure</p>
   <p className="text-3xl font-extrabold text-red-500 drop-shadow-sm">
     ₹{predictedExpense?.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
   </p>
 </div>
 
-<div className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 border border-gray-700 p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-default">
-  <p className="text-xs font-semibold uppercase text-gray-400 tracking-wide mb-1">Predicted Savings</p>
+<div className="rounded-xl border border-border bg-card p-6 shadow-lg transition-shadow duration-300 hover:shadow-xl cursor-default">
+  <p className="text-xs font-semibold uppercase text-muted-foreground tracking-wide mb-1">Predicted Savings</p>
   <p className="text-3xl font-extrabold text-emerald-400 drop-shadow-sm">
     ₹{predictedSavings?.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
   </p>
 </div>
 
-<div className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 border border-gray-700 p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-default">
-  <p className="text-xs font-semibold uppercase text-gray-400 tracking-wide mb-1">Predicted Income</p>
+<div className="rounded-xl border border-border bg-card p-6 shadow-lg transition-shadow duration-300 hover:shadow-xl cursor-default">
+  <p className="text-xs font-semibold uppercase text-muted-foreground tracking-wide mb-1">Predicted Income</p>
   <p className="text-3xl font-extrabold text-sky-400 drop-shadow-sm">
     ₹{predictedIncome?.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
   </p>
@@ -255,7 +255,7 @@ useEffect(() => {
               Savings Suggestions
             </h2>
             {suggestions.length > 0 ? (
-              <ul className="list-disc pl-6 space-y-2 text-gray-300">
+              <ul className="list-disc pl-6 space-y-2 text-card-foreground">
                 {suggestions.map((s, i) => (
                   <li key={i}>{s}</li>
                 ))}
@@ -278,7 +278,7 @@ useEffect(() => {
           <input
             type="text"
             placeholder="Category (e.g. Food)"
-            className="p-3 rounded-md bg-background border border-gray-700 focus:outline-none focus:ring-2 focus:ring-accent text-white"
+            className="p-3 rounded-md bg-background border border-border focus:outline-none focus:ring-2 focus:ring-primary text-foreground"
             value={newExpense.category}
             onChange={e => setNewExpense({ ...newExpense, category: e.target.value })}
             required
@@ -286,7 +286,7 @@ useEffect(() => {
           <input
             type="number"
             placeholder="Amount (₹)"
-            className="p-3 rounded-md bg-background border border-gray-700 focus:outline-none focus:ring-2 focus:ring-accent text-white"
+            className="p-3 rounded-md bg-background border border-border focus:outline-none focus:ring-2 focus:ring-primary text-foreground"
             value={newExpense.amount}
             onChange={e => setNewExpense({ ...newExpense, amount: e.target.value })}
             required
@@ -294,7 +294,7 @@ useEffect(() => {
           />
           <input
             type="date"
-            className="p-3 rounded-md bg-background border border-gray-700 focus:outline-none focus:ring-2 focus:ring-accent text-white"
+            className="p-3 rounded-md bg-background border border-border focus:outline-none focus:ring-2 focus:ring-primary text-foreground"
             value={newExpense.date}
             onChange={e => setNewExpense({ ...newExpense, date: e.target.value })}
             required
@@ -313,7 +313,7 @@ useEffect(() => {
 
 function Card({ title, value, icon }: { title: string; value: string; icon: React.ReactNode }) {
   return (
-    <div className="group bg-[#161b22] rounded-xl p-6 shadow-lg hover:shadow-accent transition-all border border-gray-700 transform hover:-translate-y-1 hover:scale-105 duration-300 cursor-default">
+    <div className="group bg-card rounded-xl p-6 shadow-lg hover:shadow-accent transition-all border border-border transform hover:-translate-y-1 hover:scale-105 duration-300 cursor-default">
       <div className="flex items-center gap-3 mb-3">
         {icon}
         <h3 className="text-lg font-semibold group-hover:text-accent transition-colors">{title}</h3>

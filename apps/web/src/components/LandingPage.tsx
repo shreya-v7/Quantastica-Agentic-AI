@@ -108,9 +108,9 @@ const LandingPage = () => {
               Now Speaks
             </span>
           </h1>
-          <p className="text-xl text-gray-400 leading-relaxed">
+          <p className="text-xl text-white/75 leading-relaxed">
             Have natural conversations with your AI financial assistant. Track expenses, get investment tips,
-            and make smarter money decisions—all through voice.
+            and make smarter money decisions -all through voice.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <a
@@ -148,7 +148,7 @@ const LandingPage = () => {
 
           <div className="space-y-4">
             <div className="bg-white/5 rounded-2xl p-4 backdrop-blur-sm">
-              <p className="text-sm text-gray-300 mb-2">You said:</p>
+              <p className="text-sm text-white/85 mb-2">You said:</p>
               <p className="text-white">"How much did I spend on dining this month?"</p>
             </div>
 
@@ -177,7 +177,7 @@ const LandingPage = () => {
           <h2 className="text-4xl lg:text-5xl font-bold mb-4">
             <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">Powerful Features</span>
           </h2>
-          <p className="text-xl text-gray-400">Everything you need to master your finances</p>
+          <p className="text-xl text-white/75">Everything you need to master your finances</p>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -206,7 +206,7 @@ const LandingPage = () => {
                   {feature.icon}
                 </div>
                 <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-                <p className="text-gray-400">{feature.description}</p>
+                <p className="text-white/75">{feature.description}</p>
               </div>
             </motion.div>
           ))}
@@ -219,7 +219,7 @@ const LandingPage = () => {
           <h2 className="text-4xl lg:text-5xl font-bold mb-4">
             <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">How It Works</span>
           </h2>
-          <p className="text-xl text-gray-400">Get started in 3 simple steps</p>
+          <p className="text-xl text-white/75">Get started in 3 simple steps</p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-8">
@@ -241,7 +241,7 @@ const LandingPage = () => {
               </div>
               <div className="relative pt-8">
                 <h3 className="text-2xl font-semibold mb-3">{item.title}</h3>
-                <p className="text-gray-400">{item.desc}</p>
+                <p className="text-white/75">{item.desc}</p>
               </div>
             </motion.div>
           ))}
@@ -254,7 +254,7 @@ const LandingPage = () => {
           <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-3xl blur-3xl opacity-20"></div>
           <div className="relative bg-gradient-to-r from-cyan-400/10 to-blue-500/10 backdrop-blur-xl rounded-3xl p-12 border border-white/10 shadow-lg">
             <h2 className="text-4xl lg:text-5xl font-bold mb-6">Ready to Transform Your Finances?</h2>
-            <p className="text-xl text-gray-300 mb-8">
+            <p className="text-xl text-white/85 mb-8">
               Join thousands who are already making smarter money decisions with AI
             </p>
             <a

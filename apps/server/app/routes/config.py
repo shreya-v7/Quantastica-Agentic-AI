@@ -1,4 +1,4 @@
-"""Public config — feature flags + contract version (SSOT for runtime behavior)."""
+"""Public config  - feature flags + contract version (SSOT for runtime behavior)."""
 
 from __future__ import annotations
 

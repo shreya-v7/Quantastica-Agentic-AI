@@ -1,12 +1,9 @@
-from alpaca.trading.client import TradingClient
 from alpaca.trading.enums import OrderSide, TimeInForce, OrderType
 from alpaca.trading.requests import (
     MarketOrderRequest, LimitOrderRequest,
     StopOrderRequest, StopLimitOrderRequest,
 )
-from ..config import API_KEY, SECRET_KEY
-
-client = TradingClient(api_key=API_KEY, secret_key=SECRET_KEY, paper=True)
+from ..alpaca_client import get_trading_client
 
 
 def place_order(symbol: str, qty: float, side: str, order_type: str,
@@ -50,5 +47,6 @@ def place_order(symbol: str, qty: float, side: str, order_type: str,
     else:
         raise ValueError(f"Invalid order type: {order_type}")
 
+    client = get_trading_client()
     res = client.submit_order(req)
     return f"Order placed: {res.id}"

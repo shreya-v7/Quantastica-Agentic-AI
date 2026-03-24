@@ -1,4 +1,4 @@
-"""Single contract version — must match `packages/types/contracts.json`."""
+"""Single contract version  - must match `packages/types/contracts.json`."""
 
 from __future__ import annotations
 

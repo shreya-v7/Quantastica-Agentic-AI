@@ -1,4 +1,4 @@
-"""Demo payloads — all metrics from server-side snapshot + insight engine (no UI math)."""
+"""Demo payloads  - all metrics from server-side snapshot + insight engine (no UI math)."""
 
 from __future__ import annotations
 
@@ -112,7 +112,7 @@ def demo_insight_highlights() -> InsightHighlightsResponse:
                 severity="action",
                 title="Cash buffer",
                 body=(
-                    "Liquid reserves cover roughly 4 months of estimated spend — within a healthy range."
+                    "Liquid reserves cover roughly 4 months of estimated spend  - within a healthy range."
                 ),
                 action_label="Adjust target",
             ),

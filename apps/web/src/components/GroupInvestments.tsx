@@ -119,7 +119,7 @@ export default function GroupInvestments() {
               ${
                 s === step
                   ? "bg-accent text-accent-foreground shadow-lg"
-                  : "bg-card text-gray-400 hover:bg-accent/50 hover:text-accent-foreground"
+                  : "bg-card text-muted-foreground hover:bg-accent/50 hover:text-accent-foreground"
               }
               ${s > step && !canGoNextStep() ? "cursor-not-allowed opacity-40" : "cursor-pointer"}
             `}
@@ -150,7 +150,7 @@ export default function GroupInvestments() {
                 value={ipoTitle}
                 onChange={(e) => setIpoTitle(e.target.value)}
                 placeholder="E.g. XYZ Ltd IPO"
-                className="w-full rounded-md border border-gray-700 bg-background p-3 focus:outline-none focus:ring-2 focus:ring-accent text-foreground"
+                className="w-full rounded-md border border-border bg-background p-3 focus:outline-none focus:ring-2 focus:ring-accent text-foreground"
                 required
               />
             </div>
@@ -160,7 +160,7 @@ export default function GroupInvestments() {
                 value={ipoDescription}
                 onChange={(e) => setIpoDescription(e.target.value)}
                 placeholder="Details about this investment opportunity"
-                className="w-full rounded-md border border-gray-700 bg-background p-3 resize-y min-h-[100px] focus:outline-none focus:ring-2 focus:ring-accent text-foreground"
+                className="w-full rounded-md border border-border bg-background p-3 resize-y min-h-[100px] focus:outline-none focus:ring-2 focus:ring-accent text-foreground"
               />
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -171,7 +171,7 @@ export default function GroupInvestments() {
                   value={targetAmount}
                   onChange={(e) => setTargetAmount(e.target.value)}
                   placeholder="E.g. 10,00,000"
-                  className="w-full rounded-md border border-gray-700 bg-background p-3 focus:outline-none focus:ring-2 focus:ring-accent text-foreground"
+                  className="w-full rounded-md border border-border bg-background p-3 focus:outline-none focus:ring-2 focus:ring-accent text-foreground"
                   min={0}
                   required
                 />
@@ -182,7 +182,7 @@ export default function GroupInvestments() {
                   type="date"
                   value={deadline}
                   onChange={(e) => setDeadline(e.target.value)}
-                  className="w-full rounded-md border border-gray-700 bg-background p-3 focus:outline-none focus:ring-2 focus:ring-accent text-foreground"
+                  className="w-full rounded-md border border-border bg-background p-3 focus:outline-none focus:ring-2 focus:ring-accent text-foreground"
                   required
                 />
               </div>
@@ -214,7 +214,7 @@ export default function GroupInvestments() {
             <Users className="h-6 w-6 text-accent" />
             Select Collaborators
           </h2>
-          <p className="text-gray-400 mb-4">
+          <p className="text-muted-foreground mb-4">
             Pick friends who will join you in this investment group.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 max-h-[400px] overflow-y-auto">
@@ -228,7 +228,7 @@ export default function GroupInvestments() {
                     ${
                       selected
                         ? "bg-accent text-accent-foreground shadow-accent"
-                        : "bg-[#161b22] hover:shadow-accent"
+                        : "bg-card hover:shadow-accent"
                     }
                   `}
                 >
@@ -241,10 +241,10 @@ export default function GroupInvestments() {
                   </div>
                   <div>
                     <p className="font-semibold">{friend.name}</p>
-                    <p className="text-sm text-gray-400">{friend.email}</p>
+                    <p className="text-sm text-muted-foreground">{friend.email}</p>
                     <p
                       className={`text-xs font-medium mt-1 ${
-                        friend.online ? "text-green-400" : "text-gray-500"
+                        friend.online ? "text-green-400" : "text-muted-foreground"
                       }`}
                     >
                       {friend.online ? "Online" : "Offline"}
@@ -305,7 +305,7 @@ export default function GroupInvestments() {
             </h2>
             <div className="overflow-x-auto max-h-[280px]">
               <table className="min-w-full text-left text-sm">
-                <thead className="border-b border-gray-700">
+                <thead className="border-b border-border">
                   <tr>
                     <th className="p-3">Collaborator</th>
                     <th className="p-3">Amount (₹)</th>
@@ -319,7 +319,7 @@ export default function GroupInvestments() {
                     return (
                       <tr
                         key={inv.id}
-                        className="border-b border-gray-700 hover:bg-background/30 transition-colors cursor-pointer"
+                        className="border-b border-border hover:bg-background/30 transition-colors cursor-pointer"
                       >
                         <td className="p-3">{friend?.name || "Unknown"}</td>
                         <td className="p-3">{inv.amount.toLocaleString()}</td>
@@ -363,7 +363,7 @@ export default function GroupInvestments() {
                     return (
                       <li
                         key={inv.id}
-                        className="flex justify-between items-center p-4 bg-[#161b22] rounded-lg shadow hover:shadow-accent transition-shadow duration-300"
+                        className="flex justify-between items-center p-4 bg-card rounded-lg shadow hover:shadow-accent transition-shadow duration-300"
                       >
                         <div>
                           <p>
@@ -394,9 +394,9 @@ export default function GroupInvestments() {
                 <MessageCircle className="h-6 w-6 text-accent" />
                 Group Chat
               </h2>
-              <div className="flex-1 overflow-y-auto mb-4 space-y-3 border border-gray-700 rounded-md p-3 bg-[#0d1117]">
+              <div className="flex-1 overflow-y-auto mb-4 space-y-3 border border-border rounded-md p-3 bg-muted">
                 {chatMessages.length === 0 && (
-                  <p className="text-gray-400 text-center mt-6">No messages yet. Start chatting!</p>
+                  <p className="text-muted-foreground text-center mt-6">No messages yet. Start chatting!</p>
                 )}
                 {chatMessages.map((msg) => (
                   <div
@@ -422,7 +422,7 @@ export default function GroupInvestments() {
                   value={chatInput}
                   onChange={(e) => setChatInput(e.target.value)}
                   placeholder="Type a message..."
-                  className="flex-1 rounded-md px-4 py-2 bg-[#0d1117] border border-gray-700 focus:outline-none focus:ring-2 focus:ring-accent text-white"
+                  className="flex-1 rounded-md px-4 py-2 bg-muted border border-border focus:outline-none focus:ring-2 focus:ring-accent text-foreground"
                 />
                 <button
                   type="submit"

@@ -1,4 +1,4 @@
-/** Canonical insight metrics — always produced by `generate_insights` on the backend. */
+/** Canonical insight metrics  - always produced by `generate_insights` on the backend. */
 export type FinancialSummary = {
   netWorth: number;
   riskExposure: number;
@@ -11,7 +11,7 @@ export type ChartPoint = {
 };
 
 /**
- * UI dashboard payload — all numeric fields computed server-side from a snapshot + insight engine.
+ * UI dashboard payload  - all numeric fields computed server-side from a snapshot + insight engine.
  * UI must not re-derive net worth or summary metrics.
  */
 export type DashboardPayload = {

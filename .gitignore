@@ -1,4 +1,4 @@
-# Dependencies & builds (never commit — install locally)
+# Dependencies & builds (never commit  - install locally)
 node_modules/
 **/node_modules/
 dist/

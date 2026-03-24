@@ -1,8 +1,9 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useMemo } from "react";
 import axios from "axios";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import { Send } from "lucide-react";
+import { useUiStore } from "../store/uiStore";
 
 // === Constants ===
 const TICKERS = ["AAPL", "GOOGL", "MSFT"];
@@ -23,7 +24,6 @@ const AGENT_CONFIG = {
 const getRandomSessionId = () => "s_" + Math.random().toString(36).substring(2, 10);
 const getTime = () => new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 
-// === Type Definitions ===
 type TradeData = {
   ticker: string;
   timeseries: { time: number; price: number }[];
@@ -44,15 +44,16 @@ type FinancialData = {
   stock?: { transactions?: any[] };
 };
 
-// === StatBox Component ===
-const StatBox = ({ label, value, color }: { label: string; value: string; color: string }) => (
-  <div className="p-4 border border-zinc-700 rounded-xl">
-    <div className="text-xs text-zinc-400">{label}</div>
-    <div className={`text-lg font-bold ${color}`}>{value}</div>
+const selectClass =
+  "rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground shadow-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 dark:bg-card";
+
+const StatBox = ({ label, value, valueClass }: { label: string; value: string; valueClass: string }) => (
+  <div className="rounded-xl border border-border bg-card p-4 text-card-foreground shadow-sm">
+    <div className="fi-caption">{label}</div>
+    <div className={`text-lg font-semibold tabular-nums ${valueClass}`}>{value}</div>
   </div>
 );
 
-// === Fetch Trade Data ===
 const fetchTradeData = async (ticker: string, timeframe: string): Promise<TradeData> => {
   const proxyUrl = "https://api.allorigins.win/get?url=";
   const targetUrl = encodeURIComponent(
@@ -69,8 +70,31 @@ const fetchTradeData = async (ticker: string, timeframe: string): Promise<TradeD
   return { ticker, timeseries };
 };
 
-// === Main Component ===
+function chartPalette(isDark: boolean) {
+  if (isDark) {
+    return {
+      title: "#e8edf4",
+      axis: "#94a3b8",
+      grid: "#334155",
+      tooltipBg: "#1e293b",
+      tooltipText: "#f1f5f9",
+      series: "#38bdf8",
+    };
+  }
+  return {
+    title: "#0f172a",
+    axis: "#475569",
+    grid: "#e2e8f0",
+    tooltipBg: "#ffffff",
+    tooltipText: "#0f172a",
+    series: "#3d4aad",
+  };
+}
+
 const TradeExecution: React.FC = () => {
+  const theme = useUiStore((s) => s.theme);
+  const isDark = theme === "dark";
+
   const [selectedTicker, setSelectedTicker] = useState(TICKERS[0]);
   const [selectedTimeframe, setSelectedTimeframe] = useState(TIMEFRAMES[0].value);
   const [trade, setTrade] = useState<TradeData | null>(null);
@@ -83,11 +107,8 @@ const TradeExecution: React.FC = () => {
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   const scrollToBottom = () => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
-    }
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   };
-
 
   useEffect(() => {
     scrollToBottom();
@@ -111,8 +132,8 @@ const TradeExecution: React.FC = () => {
           "fetch_net_worth.json",
           "fetch_stock_transactions.json",
         ];
-        const res = await Promise.all(files.map(f => axios.get(`${baseDir}/${f}`)));
-        const [bank, credit, epf, mf, netWorth, stock] = res.map(r => r.data);
+        const res = await Promise.all(files.map((f) => axios.get(`${baseDir}/${f}`)));
+        const [bank, credit, epf, mf, netWorth, stock] = res.map((r) => r.data);
         setFinance({ bank, credit, epf, mf, netWorth, stock });
       } catch (err) {
         console.error("Finance data error", err);
@@ -134,10 +155,11 @@ const TradeExecution: React.FC = () => {
   };
 
   const sendChat = async () => {
-    if (!input.trim()) return;
+    const text = input.trim();
+    if (!text) return;
     const time = getTime();
-    const userMessage: ChatMessage = { role: "user", message: input, time };
-    setChat(prev => [...prev, userMessage]);
+    const userMessage: ChatMessage = { role: "user", message: text, time };
+    setChat((prev) => [...prev, userMessage]);
     setInput("");
     setTyping(true);
 
@@ -157,29 +179,30 @@ const TradeExecution: React.FC = () => {
         session_id: session,
         new_message: {
           role: "user",
-          parts: [{ text: input }],
+          parts: [{ text }],
         },
         context: {
-          financial_data: finance || {}, // attach full raw finance data separately here
+          financial_data: finance || {},
         },
         streaming: false,
       };
 
       const response = await axios.post(`http://${server}:${port}/run`, payload);
-      let reply = response.data?.at(-1)?.content?.parts?.[0]?.text || "No response received.";
+      const reply = response.data?.at(-1)?.content?.parts?.[0]?.text || "No response received.";
 
-      setChat(prev => [...prev, { role: "assistant", message: reply, time: getTime() }]);
+      setChat((prev) => [...prev, { role: "assistant", message: reply, time: getTime() }]);
     } catch (err) {
       console.error("Chat error:", err);
-      setChat(prev => [...prev, { role: "assistant", message: "⚠️ Error reaching the server.", time: getTime() }]);
+      setChat((prev) => [
+        ...prev,
+        { role: "assistant", message: "⚠️ Error reaching the server.", time: getTime() },
+      ]);
     } finally {
       setTyping(false);
     }
   };
 
-
-
-  const prices = trade?.timeseries.map(p => p.price) || [];
+  const prices = trade?.timeseries.map((p) => p.price) || [];
   const averagePrice = prices.length ? prices.reduce((a, b) => a + b, 0) / prices.length : 0;
   const min = Math.min(...prices);
   const max = Math.max(...prices);
@@ -187,126 +210,172 @@ const TradeExecution: React.FC = () => {
   const volatility = prices.length ? ((max - min) / averagePrice) * 100 : 0;
   const changePct = prices.length ? ((last - prices[0]) / prices[0]) * 100 : 0;
 
+  const chartOptions = useMemo(() => {
+    const c = chartPalette(isDark);
+    const tfLabel = TIMEFRAMES.find((tf) => tf.value === selectedTimeframe)?.label ?? "";
+    if (!trade) {
+      return {
+        chart: { type: "line" as const, backgroundColor: "transparent", height: 400 },
+        title: { text: "" },
+      };
+    }
+    return {
+      chart: { type: "line" as const, backgroundColor: "transparent", height: 400 },
+      title: {
+        text: `${trade.ticker} — ${tfLabel}`,
+        style: { color: c.title, fontSize: "16px", fontWeight: "600" },
+      },
+      xAxis: {
+        type: "datetime",
+        labels: { style: { color: c.axis } },
+        gridLineColor: c.grid,
+        lineColor: c.grid,
+      },
+      yAxis: {
+        title: { text: "Price (USD)", style: { color: c.axis } },
+        labels: { style: { color: c.axis } },
+        gridLineColor: c.grid,
+      },
+      series: [
+        {
+          name: `${trade.ticker} price`,
+          data: trade.timeseries.map((pt) => [pt.time, pt.price]),
+          color: c.series,
+          type: "line" as const,
+          marker: { enabled: false },
+        },
+      ],
+      legend: { enabled: false },
+      credits: { enabled: false },
+      tooltip: {
+        xDateFormat: "%H:%M",
+        backgroundColor: c.tooltipBg,
+        borderColor: c.grid,
+        style: { color: c.tooltipText },
+      },
+    };
+  }, [trade, selectedTimeframe, isDark]);
+
   return (
-    <div className="min-h-screen w-full text-white px-6 py-8 space-y-8 overflow-x-hidden">
-      {/* Ticker and Timeframe Selection */}
-      <div className="flex flex-wrap items-center gap-4">
-        <div>
-          <label className="text-sm font-semibold mr-2">Ticker</label>
+    <div className="min-h-screen w-full space-y-8 overflow-x-hidden bg-background px-4 py-6 text-foreground sm:px-6 md:px-0">
+      <div className="flex flex-wrap items-end gap-6">
+        <div className="flex flex-col gap-2">
+          <label htmlFor="trade-ticker" className="text-sm font-medium text-foreground">
+            Ticker
+          </label>
           <select
-            className="bg-zinc-900 border border-zinc-700 rounded px-3 py-1"
+            id="trade-ticker"
+            className={selectClass}
             value={selectedTicker}
-            onChange={e => setSelectedTicker(e.target.value)}
+            onChange={(e) => setSelectedTicker(e.target.value)}
           >
-            {TICKERS.map(ticker => <option key={ticker} value={ticker}>{ticker}</option>)}
+            {TICKERS.map((ticker) => (
+              <option key={ticker} value={ticker}>
+                {ticker}
+              </option>
+            ))}
           </select>
         </div>
-        <div>
-          <label className="text-sm font-semibold mr-2">Timeframe</label>
+        <div className="flex flex-col gap-2">
+          <label htmlFor="trade-timeframe" className="text-sm font-medium text-foreground">
+            Timeframe
+          </label>
           <select
-            className="bg-zinc-900 border border-zinc-700 rounded px-3 py-1"
+            id="trade-timeframe"
+            className={selectClass}
             value={selectedTimeframe}
-            onChange={e => setSelectedTimeframe(e.target.value)}
+            onChange={(e) => setSelectedTimeframe(e.target.value)}
           >
-            {TIMEFRAMES.map(tf => <option key={tf.value} value={tf.value}>{tf.label}</option>)}
+            {TIMEFRAMES.map((tf) => (
+              <option key={tf.value} value={tf.value}>
+                {tf.label}
+              </option>
+            ))}
           </select>
         </div>
       </div>
 
-      {/* Chart and Chat Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div>
-          {loading ? <p>Loading chart...</p> : trade ? (
-            <HighchartsReact highcharts={Highcharts} options={{
-              chart: { type: "line", backgroundColor: "transparent", height: 400 },
-              title: {
-                text: `${trade?.ticker ?? ""} - ${TIMEFRAMES.find(tf => tf.value === selectedTimeframe)?.label ?? ""}`,
-                style: { color: "#fff" }
-              },
-              xAxis: { type: "datetime", labels: { style: { color: "#ccc" } }, gridLineColor: "#333" },
-              yAxis: {
-                title: { text: "Price (USD)", style: { color: "#fff" } },
-                labels: { style: { color: "#ccc" } },
-                gridLineColor: "#333"
-              },
-              series: [{
-                name: `${trade?.ticker ?? ""} Price`,
-                data: trade.timeseries.map(pt => [pt.time, pt.price]),
-                color: "#4fd1c5",
-                type: "line",
-                marker: { enabled: false }
-              }],
-              legend: { enabled: false },
-              credits: { enabled: false },
-              tooltip: { xDateFormat: "%H:%M", backgroundColor: "#222", style: { color: "#fff" } },
-            }} />
-          ) : <p>No data available</p>}
+      <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+        <div className="rounded-xl border border-border bg-card/50 p-4 shadow-sm dark:bg-card/30">
+          {loading ? (
+            <p className="text-sm text-muted-foreground">Loading chart…</p>
+          ) : trade ? (
+            <HighchartsReact highcharts={Highcharts} options={chartOptions} />
+          ) : (
+            <p className="text-sm text-muted-foreground">No data available</p>
+          )}
         </div>
 
-        {/* Chat */}
-        <div className="flex flex-col border border-zinc-700 rounded-xl p-4 h-[450px] relative">
-          {/* Bot Header */}
-          <div className="flex items-center gap-2 mb-3 text-white text-sm font-semibold">
-            🤖 Let’s Trade with Bot
-          </div>
+        <div className="relative flex h-[450px] flex-col rounded-xl border border-border bg-card p-4 shadow-sm">
+          <div className="mb-3 text-sm font-semibold text-foreground">Trade assistant</div>
 
-          {/* Scrollable Chat Messages */}
-          <div
-            className="flex-1 overflow-y-auto space-y-3 pr-2"
-            style={{ maxHeight: "calc(100% - 56px)" }}
-          >
+          <div className="flex-1 space-y-3 overflow-y-auto pr-2" style={{ maxHeight: "calc(100% - 56px)" }}>
             {chat.map((msg, idx) => (
-              <div
-                key={idx}
-                className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
-              >
+              <div key={idx} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                 <div
-                  className={`p-3 rounded-lg max-w-[70%] ${msg.role === "user"
-                      ? "bg-accent text-black"
-                      : "bg-zinc-800 text-white"
-                    }`}
+                  className={`max-w-[70%] rounded-lg p-3 text-sm ${
+                    msg.role === "user"
+                      ? "bg-primary text-primary-foreground"
+                      : "border border-border bg-muted text-foreground"
+                  }`}
                 >
-                  <div className="text-xs opacity-60 mb-1">
-                    {msg.role === "user" ? "You" : "Assistant"} • {msg.time}
+                  <div
+                    className={`mb-1 text-xs ${
+                      msg.role === "user" ? "text-primary-foreground/80" : "text-muted-foreground"
+                    }`}
+                  >
+                    {msg.role === "user" ? "You" : "Assistant"} · {msg.time}
                   </div>
                   {msg.message}
                 </div>
               </div>
             ))}
             {typing && (
-              <div className="text-sm text-gray-400 animate-pulse">Assistant is typing...</div>
+              <div className="animate-pulse text-sm text-muted-foreground">Assistant is typing…</div>
             )}
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Input Area */}
-          <div className="flex items-center gap-2 mt-3">
+          <div className="mt-3 flex items-center gap-2">
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && sendChat()}
-              className="flex-1 bg-zinc-800 border border-zinc-700 text-white rounded px-4 py-2"
-              placeholder="Ask about trade insights, price action..."
+              className="fi-input flex-1 py-2.5"
+              placeholder="Ask about trade insights, price action…"
+              aria-label="Message"
             />
             <button
+              type="button"
               onClick={sendChat}
-              className="bg-accent text-black px-4 py-2 rounded-lg hover:bg-opacity-80 transition"
+              className="inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2.5 text-primary-foreground transition hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40"
+              aria-label="Send"
             >
               <Send size={16} />
             </button>
           </div>
         </div>
-
-
-
       </div>
 
-      {/* Trade Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-        <StatBox label="Latest Price" value={`$${last.toFixed(2)}`} color="text-accent" />
-        <StatBox label="Average Price" value={`$${averagePrice.toFixed(2)}`} color="text-yellow-300" />
-        <StatBox label="Volatility" value={`${volatility.toFixed(2)}%`} color="text-purple-400" />
-        <StatBox label="Change (%)" value={`${changePct >= 0 ? "+" : ""}${changePct.toFixed(2)}%`} color={changePct >= 0 ? "text-green-400" : "text-red-400"} />
+      <div className="grid grid-cols-2 gap-4 text-center md:grid-cols-4">
+        <StatBox label="Latest price" value={`$${last.toFixed(2)}`} valueClass="text-primary" />
+        <StatBox
+          label="Average price"
+          value={`$${averagePrice.toFixed(2)}`}
+          valueClass="text-sky-600 dark:text-sky-400"
+        />
+        <StatBox
+          label="Volatility"
+          value={`${volatility.toFixed(2)}%`}
+          valueClass="text-violet-600 dark:text-violet-400"
+        />
+        <StatBox
+          label="Change"
+          value={`${changePct >= 0 ? "+" : ""}${changePct.toFixed(2)}%`}
+          valueClass={
+            changePct >= 0 ? "text-emerald-600 dark:text-emerald-400" : "text-red-600 dark:text-red-400"
+          }
+        />
       </div>
     </div>
   );

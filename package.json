@@ -1,5 +1,6 @@
 {
   "name": "quantastica",
+  "version": "0.0.0",
   "private": true,
   "workspaces": ["apps/web", "packages/*"],
   "scripts": {
@@ -12,6 +13,7 @@
     "check:contract": "node check-contract-sync.mjs"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=20",
+    "npm": ">=7"
   }
 }

@@ -32,7 +32,7 @@ export function SystemConfigProvider({ children }: { children: ReactNode }) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center gap-3 bg-background text-foreground">
         <div className="h-12 w-48 rounded-xl fi-shimmer" aria-hidden />
-        <p className="text-sm text-muted-foreground">Loading configuration…</p>
+        <p className="fi-body text-center">Loading configuration…</p>
       </div>
     );
   }
@@ -40,8 +40,8 @@ export function SystemConfigProvider({ children }: { children: ReactNode }) {
   if (isError || !data) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-background p-6 text-center text-foreground">
-        <p className="text-sm text-destructive">Could not load system config.</p>
-        <p className="max-w-md text-xs text-muted-foreground">
+        <p className="text-sm font-medium text-destructive">Could not load system config.</p>
+        <p className="fi-caption max-w-md">
           {(error as Error)?.message ?? "Unknown error"}
         </p>
         <button

@@ -1,5 +1,5 @@
 /**
- * API base — dev uses Vite `/api` proxy; prod uses `VITE_API_URL` (no `/api` prefix).
+ * API base  - dev uses Vite `/api` proxy; prod uses `VITE_API_URL` (no `/api` prefix).
  */
 export function apiUrl(path: string): string {
   const p = path.startsWith("/") ? path : `/${path}`;

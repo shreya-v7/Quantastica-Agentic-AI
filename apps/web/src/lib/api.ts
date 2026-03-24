@@ -10,7 +10,7 @@ import { apiUrl } from "./apiUrl";
 export type { ChartPoint, DashboardPayload, InsightHighlight };
 
 /**
- * Dashboard snapshot — server-only. Demo uses `/demo/dashboard`; production uses authenticated routes.
+ * Dashboard snapshot  - server-only. Demo uses `/demo/dashboard`; production uses authenticated routes.
  */
 export async function fetchDashboardPayload(): Promise<DashboardPayload> {
   const res = await fetch(apiUrl("/demo/dashboard"));

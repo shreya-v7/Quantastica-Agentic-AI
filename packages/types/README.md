@@ -4,7 +4,7 @@
 
 | Artifact | Role |
 |----------|------|
-| `contracts.json` | Canonical semver — Python reads this via `app/contracts/version.py` |
+| `contracts.json` | Canonical semver  - Python reads this via `app/contracts/version.py` |
 | `src/*.ts` | TypeScript types + Zod parsers, `CloudProvider` / `CONFIG`, `CloudServices` interface |
 | `dist/` | Build output consumed by `apps/web` (`@quantastica/web`) |
 

@@ -1,9 +1,6 @@
-from alpaca.trading.client import TradingClient
-from ..config import API_KEY, SECRET_KEY
+from ..alpaca_client import get_trading_client
 from ..get_all_orders_agent.get_all_orders_tool import get_all_orders_for_symbol
 from ..place_order_agent.place_order_tool import place_order
-
-client = TradingClient(api_key=API_KEY, secret_key=SECRET_KEY, paper=True)
 
 
 def update_order(symbol: str, new_qty: float, new_price: float = 0.0, order_type: str = "market"):
@@ -19,6 +16,11 @@ def update_order(symbol: str, new_qty: float, new_price: float = 0.0, order_type
     Returns:
         Confirmation message for the updated order.
     """
+    try:
+        client = get_trading_client()
+    except RuntimeError as e:
+        return str(e)
+
     orders = get_all_orders_for_symbol(symbol=symbol)
     updated = False
     for order in orders:

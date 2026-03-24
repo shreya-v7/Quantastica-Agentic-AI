@@ -9,7 +9,7 @@ type CardProps = {
 
 export function Card({ children, className = "", variant = "default" }: CardProps) {
   const base =
-    "rounded-2xl border border-border bg-card p-5 text-card-foreground shadow-sm transition-shadow duration-300 hover:shadow-lg fi-glow";
+    "rounded-2xl border border-border/80 bg-card/95 p-5 text-card-foreground shadow-sm transition-shadow duration-300 hover:border-border hover:shadow-md dark:bg-card/90 fi-glow";
   const gradient =
     variant === "gradient"
       ? "relative overflow-hidden bg-gradient-to-br from-primary/10 via-card to-card dark:from-primary/15 dark:via-card dark:to-background"

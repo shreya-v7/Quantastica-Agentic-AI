@@ -37,7 +37,7 @@ export const NewsPluginComponent = ({ topic }: { topic: string }) => {
           <a href={item.url} target="_blank" rel="noopener noreferrer" style={{ color: "#38bdf8", fontWeight: "bold" }}>
             {item.title}
           </a>
-          <p style={{ fontSize: "0.9rem", color: "#94a3b8" }}>{item.source} — {new Date(item.publishedAt).toLocaleString()}</p>
+          <p style={{ fontSize: "0.9rem", color: "#94a3b8" }}>{item.source}  - {new Date(item.publishedAt).toLocaleString()}</p>
           <p>{item.description}</p>
         </div>
       ))}

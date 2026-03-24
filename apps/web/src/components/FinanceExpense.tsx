@@ -132,7 +132,7 @@ export default function FinanceTracker() {
   };
 
   return (
-    <div className="min-h-screen bg-darkBlue text-white p-6 sm:p-10 max-w-5xl mx-auto space-y-10 animate-fade-in">
+    <div className="min-h-screen bg-background text-foreground p-6 sm:p-10 max-w-5xl mx-auto space-y-10 animate-fade-in">
       <h1 className="text-4xl font-bold mb-6 flex items-center gap-3">
         <DollarSign className="w-8 h-8 text-accent" />
         Finance Tracker
@@ -155,7 +155,7 @@ export default function FinanceTracker() {
       </div>
 
       {/* Expense Categories */}
-      <section className="bg-[#161b22] p-6 rounded-2xl shadow-lg glass">
+      <section className="bg-card p-6 rounded-2xl shadow-lg glass">
         <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
           <BarChart2 className="w-6 h-6 text-accent" /> Expense Breakdown by
           Category
@@ -164,7 +164,7 @@ export default function FinanceTracker() {
           {Object.entries(expensesByCategory).map(([category, amount]) => (
             <li
               key={category}
-              className="flex justify-between border-b border-gray-700 py-2 hover:bg-accent/20 transition rounded-md px-2 cursor-pointer"
+              className="flex justify-between border-b border-border py-2 hover:bg-accent/20 transition rounded-md px-2 cursor-pointer"
             >
               <span>{category}</span>
               <span>₹{amount.toLocaleString()}</span>
@@ -184,7 +184,7 @@ export default function FinanceTracker() {
             ₹{predictedExpense.toLocaleString()}
           </p>
         ) : (
-          <p className="text-gray-400">
+          <p className="text-muted-foreground">
             Insufficient data to predict expenses
           </p>
         )}
@@ -197,7 +197,7 @@ export default function FinanceTracker() {
           Savings Suggestions
         </h2>
         {suggestions.length > 0 ? (
-          <ul className="list-disc pl-6 space-y-2 text-gray-300">
+          <ul className="list-disc pl-6 space-y-2 text-card-foreground">
             {suggestions.map((s, i) => (
               <li key={i}>{s}</li>
             ))}
@@ -219,7 +219,7 @@ export default function FinanceTracker() {
           <input
             type="text"
             placeholder="Category (e.g. Food)"
-            className="p-3 rounded-md bg-background border border-gray-700 focus:outline-none focus:ring-2 focus:ring-accent text-white"
+            className="p-3 rounded-md bg-background border border-border focus:outline-none focus:ring-2 focus:ring-primary text-foreground"
             value={newExpense.category}
             onChange={(e) =>
               setNewExpense({ ...newExpense, category: e.target.value })
@@ -229,7 +229,7 @@ export default function FinanceTracker() {
           <input
             type="number"
             placeholder="Amount (₹)"
-            className="p-3 rounded-md bg-background border border-gray-700 focus:outline-none focus:ring-2 focus:ring-accent text-white"
+            className="p-3 rounded-md bg-background border border-border focus:outline-none focus:ring-2 focus:ring-primary text-foreground"
             value={newExpense.amount}
             onChange={(e) =>
               setNewExpense({ ...newExpense, amount: e.target.value })
@@ -239,7 +239,7 @@ export default function FinanceTracker() {
           />
           <input
             type="date"
-            className="p-3 rounded-md bg-background border border-gray-700 focus:outline-none focus:ring-2 focus:ring-accent text-white"
+            className="p-3 rounded-md bg-background border border-border focus:outline-none focus:ring-2 focus:ring-primary text-foreground"
             value={newExpense.date}
             onChange={(e) =>
               setNewExpense({ ...newExpense, date: e.target.value })
@@ -268,7 +268,7 @@ function Card({
   icon: React.ReactNode;
 }) {
   return (
-    <div className="group bg-[#161b22] rounded-xl p-6 shadow-lg hover:shadow-accent transition-all border border-gray-700 transform hover:-translate-y-1 hover:scale-105 duration-300 cursor-default">
+    <div className="group bg-card rounded-xl p-6 shadow-lg hover:shadow-accent transition-all border border-border transform hover:-translate-y-1 hover:scale-105 duration-300 cursor-default">
       <div className="flex items-center gap-3 mb-3">
         {icon}
         <h3 className="text-lg font-semibold group-hover:text-accent transition-colors">

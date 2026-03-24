@@ -62,22 +62,22 @@ const FamilyFinancePage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-darkBlue text-white p-4 sm:p-6 md:p-10 space-y-10 animate-fade-in">
+    <div className="min-h-screen bg-background text-foreground p-4 sm:p-6 md:p-10 space-y-10 animate-fade-in">
       {/* Page header */}
       <div className="text-center">
-        <h1 className="text-4xl font-extrabold mb-3 text-accent drop-shadow-lg">
+        <h1 className="mb-3 text-balance text-4xl font-bold tracking-tight text-foreground">
           Family Finance
         </h1>
-        <p className="text-gray-400 max-w-2xl mx-auto text-sm sm:text-base">
+        <p className="mx-auto max-w-2xl text-sm leading-relaxed text-foreground/80 dark:text-foreground/75 sm:text-base">
           Manage shared expenses, budgeting, and savings goals as a family.
           Transparency builds trust.
         </p>
       </div>
 
       {/* Add Family Member Card */}
-      <div className="bg-[#161b22] p-6 rounded-2xl shadow-[0_8px_24px_rgba(0,0,0,0.5)] space-y-4 hover:shadow-accentBlue transition-all">
-        <h2 className="text-xl font-semibold flex items-center gap-2">
-          <PlusCircle className="text-accent h-5 w-5" /> Add Family Member
+      <div className="bg-card p-6 rounded-2xl shadow-[0_8px_24px_rgba(0,0,0,0.5)] space-y-4 hover:shadow-lg hover:shadow-primary/15 transition-all">
+        <h2 className="flex items-center gap-2 text-xl font-semibold text-foreground">
+          <PlusCircle className="h-5 w-5 shrink-0 text-primary" aria-hidden /> Add Family Member
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <input
@@ -85,14 +85,14 @@ const FamilyFinancePage: React.FC = () => {
             placeholder="Name"
             value={newMember.name}
             onChange={(e) => setNewMember({ ...newMember, name: e.target.value })}
-            className="px-4 py-2 rounded-lg bg-[#0d1117] text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-accentBlue shadow-inner"
+            className="px-4 py-2 rounded-lg bg-muted text-foreground border border-border focus:outline-none focus:ring-2 focus:ring-accentBlue shadow-inner"
           />
           <input
             type="text"
             placeholder="Role"
             value={newMember.role}
             onChange={(e) => setNewMember({ ...newMember, role: e.target.value })}
-            className="px-4 py-2 rounded-lg bg-[#0d1117] text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-accentBlue shadow-inner"
+            className="px-4 py-2 rounded-lg bg-muted text-foreground border border-border focus:outline-none focus:ring-2 focus:ring-accentBlue shadow-inner"
           />
           <input
             type="number"
@@ -101,31 +101,31 @@ const FamilyFinancePage: React.FC = () => {
             onChange={(e) =>
               setNewMember({ ...newMember, contribution: e.target.value })
             }
-            className="px-4 py-2 rounded-lg bg-[#0d1117] text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-accentBlue shadow-inner"
+            className="px-4 py-2 rounded-lg bg-muted text-foreground border border-border focus:outline-none focus:ring-2 focus:ring-accentBlue shadow-inner"
           />
         </div>
         <button
           onClick={addMember}
-          className="mt-2 bg-accentBlue hover:bg-accentPurple text-white px-6 py-2 rounded-lg transition-all shadow-lg hover:scale-105"
+          className="mt-2 rounded-lg bg-primary px-6 py-2 text-primary-foreground shadow-lg transition-all hover:scale-105 hover:opacity-95"
         >
           Add Member
         </button>
       </div>
 
       {/* Family Members List */}
-      <div className="bg-[#161b22] p-6 rounded-2xl shadow-xl space-y-6">
-        <h2 className="text-xl font-semibold flex items-center gap-2">
-          <Users className="text-accent h-5 w-5" /> Family Members
+      <div className="bg-card p-6 rounded-2xl shadow-xl space-y-6">
+        <h2 className="flex items-center gap-2 text-xl font-semibold text-foreground">
+          <Users className="h-5 w-5 shrink-0 text-primary" aria-hidden /> Family Members
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {family.map((member) => (
             <div
               key={member.id}
-              className="bg-[#0d1117] border border-gray-700 rounded-xl p-4 shadow-md hover:shadow-accentBlue transition-all hover:scale-[1.02]"
+              className="bg-muted border border-border rounded-xl p-4 shadow-md hover:shadow-lg hover:shadow-primary/15 transition-all hover:scale-[1.02]"
             >
               <p className="font-medium text-lg">{member.name}</p>
-              <p className="text-sm text-gray-400">{member.role}</p>
-              <p className="text-accent mt-2 font-semibold">
+              <p className="text-sm text-muted-foreground">{member.role}</p>
+              <p className="mt-2 font-semibold text-primary">
                 ₹{member.contribution.toLocaleString()}
               </p>
             </div>
@@ -134,16 +134,16 @@ const FamilyFinancePage: React.FC = () => {
       </div>
 
       {/* Budget Overview */}
-      <div className="bg-[#161b22] p-6 rounded-2xl shadow-xl space-y-6">
-        <h2 className="text-xl font-semibold flex items-center gap-2">
-          <PieChart className="text-accent h-5 w-5" /> Budget Overview
+      <div className="bg-card p-6 rounded-2xl shadow-xl space-y-6">
+        <h2 className="flex items-center gap-2 text-xl font-semibold text-foreground">
+          <PieChart className="h-5 w-5 shrink-0 text-primary" aria-hidden /> Budget Overview
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
           <div className="text-center">
-            <p className="text-white text-lg">
+            <p className="text-foreground text-lg">
               Total Budget: ₹{budget.toLocaleString()}
             </p>
-            <p className="text-green-400 text-lg">
+            <p className="text-lg font-medium text-emerald-700 dark:text-emerald-400">
               Remaining Budget: ₹{remainingBudget.toLocaleString()}
             </p>
           </div>
@@ -168,38 +168,38 @@ const FamilyFinancePage: React.FC = () => {
       </div>
 
       {/* Savings Goal Progress */}
-      <div className="bg-[#161b22] p-6 rounded-2xl shadow-xl space-y-4">
-        <h2 className="text-xl font-semibold flex items-center gap-2">
-          <Target className="text-accent h-5 w-5" /> Savings Goal Progress
+      <div className="bg-card p-6 rounded-2xl shadow-xl space-y-4">
+        <h2 className="flex items-center gap-2 text-xl font-semibold text-foreground">
+          <Target className="h-5 w-5 shrink-0 text-primary" aria-hidden /> Savings Goal Progress
         </h2>
-        <div className="w-full bg-gray-800 rounded-full h-5">
+        <div className="h-5 w-full rounded-full bg-muted">
           <div
-            className="bg-accentBlue h-5 rounded-full text-right pr-2 text-xs font-semibold flex items-center justify-end"
+            className="flex h-5 items-center justify-end rounded-full bg-primary pr-2 text-right text-xs font-semibold text-primary-foreground"
             style={{ width: `${savingsProgress}%` }}
           >
             {savingsProgress}%
           </div>
         </div>
-        <p className="text-gray-400 text-sm">Goal: ₹{goal.toLocaleString()}</p>
+        <p className="text-muted-foreground text-sm">Goal: ₹{goal.toLocaleString()}</p>
       </div>
 
       {/* Summary & Actions */}
-      <div className="bg-gradient-to-r from-accentBlue/30 to-accentPurple/20 p-6 md:p-8 rounded-2xl shadow-2xl max-w-6xl mx-auto text-center animate-slide-up">
-        <div className="flex items-center justify-center gap-3 text-accent mb-2">
-          <Home className="h-5 w-5" />
+      <div className="mx-auto max-w-6xl rounded-2xl border border-border/60 bg-gradient-to-r from-primary/10 via-muted/40 to-primary/5 p-6 text-center shadow-lg dark:from-primary/15 dark:via-muted/20 dark:to-primary/10 md:p-8">
+        <div className="mb-2 flex items-center justify-center gap-3 text-foreground">
+          <Home className="h-5 w-5 shrink-0 text-primary" aria-hidden />
           <h3 className="text-lg font-semibold">Family Contribution Summary</h3>
         </div>
-        <p className="text-white text-xl font-bold">
+        <p className="text-xl font-bold text-foreground">
           ₹{totalContribution.toLocaleString()}
         </p>
-        <p className="text-sm text-gray-300 mt-2">
+        <p className="mt-2 text-sm text-foreground/75 dark:text-foreground/70">
           Total shared contributions across all family accounts.
         </p>
         <div className="flex justify-center gap-4 mt-4 flex-wrap">
-          <button className="flex items-center gap-2 bg-accentBlue px-4 py-2 rounded-lg text-sm hover:bg-accentPurple transition shadow hover:scale-105">
+          <button className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm text-primary-foreground shadow transition hover:scale-105 hover:opacity-95">
             <AlarmClock className="h-4 w-4" /> Bill Reminder
           </button>
-          <button className="flex items-center gap-2 bg-accentBlue px-4 py-2 rounded-lg text-sm hover:bg-accentPurple transition shadow hover:scale-105">
+          <button className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm text-primary-foreground shadow transition hover:scale-105 hover:opacity-95">
             <FileDown className="h-4 w-4" /> Export Data
           </button>
         </div>

@@ -50,8 +50,21 @@ interface Message {
   timestamp: string;
 }
 
-const ChatInterface: React.FC = () => {
-  const [selectedAgent, setSelectedAgent] = useState(agents[0]);
+export type ChatInterfaceProps = {
+  /** Embedded in bottom-right dock: tighter layout, title hidden (shell provides header). */
+  docked?: boolean;
+  /** Set initial agent (e.g. from dock topic). Remount parent with key to reset session. */
+  defaultAgentName?: string;
+};
+
+const ChatInterface: React.FC<ChatInterfaceProps> = ({ docked = false, defaultAgentName }) => {
+  const [selectedAgent, setSelectedAgent] = useState(() => {
+    if (defaultAgentName) {
+      const match = agents.find((a) => a.name === defaultAgentName);
+      if (match) return match;
+    }
+    return agents[0];
+  });
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [typing, setTyping] = useState(false);
@@ -71,72 +84,73 @@ const ChatInterface: React.FC = () => {
   const getTime = () => new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 
   const handleSend = async () => {
-  if (!input.trim()) return;
+    const text = input.trim();
+    if (!text) return;
 
-  const userMsg: Message = {
-    sender: "user",
-    content: input,
-    timestamp: getTime(),
-  };
-
-  setMessages((prev) => [...prev, userMsg]);
-  setInput("");
-  setTyping(true);
-
-  const { appName, port, server } = mapAgentConfig(selectedAgent.name);
-
-  let session = sessionId;
-
-  try {
-    // If no session yet, create one
-    if (!sessionId) {
-      session = getRandomSessionId();
-      await axios.post(
-        `http://${server}:${port}/apps/${appName}/users/${userId}/sessions/${session}`
-      );
-      setSessionId(session);
-    }
-
-    const runPayload = {
-      user_id: userId,
-      app_name: appName,
-      session_id: session,
-      new_message: {
-        role: "user",
-        parts: [
-          {
-            text: input,
-          },
-        ],
-      },
-      streaming: false,
-    };
-
-    const response = await axios.post(`http://${server}:${port}/run`, runPayload);
-
-    const dataArray = response.data;
-    const msg = dataArray?.[dataArray.length - 1]?.content?.parts?.[0]?.text || "No valid response text";
-    const assistantMsg: Message = {
-      sender: "assistant",
-      content: msg,
+    const userMsg: Message = {
+      sender: "user",
+      content: text,
       timestamp: getTime(),
     };
 
-    setMessages((prev) => [...prev, assistantMsg]);
-  } catch (error) {
-    console.error("Error:", error);
-    setMessages((prev) => [
-      ...prev,
-      {
+    setMessages((prev) => [...prev, userMsg]);
+    setInput("");
+    setTyping(true);
+
+    const { appName, port, server } = mapAgentConfig(selectedAgent.name);
+
+    let session = sessionId;
+
+    try {
+      // If no session yet, create one
+      if (!sessionId) {
+        session = getRandomSessionId();
+        await axios.post(
+          `http://${server}:${port}/apps/${appName}/users/${userId}/sessions/${session}`
+        );
+        setSessionId(session);
+      }
+
+      const runPayload = {
+        user_id: userId,
+        app_name: appName,
+        session_id: session,
+        new_message: {
+          role: "user",
+          parts: [
+            {
+              text,
+            },
+          ],
+        },
+        streaming: false,
+      };
+
+      const response = await axios.post(`http://${server}:${port}/run`, runPayload);
+
+      const dataArray = response.data;
+      const msg = dataArray?.[dataArray.length - 1]?.content?.parts?.[0]?.text || "No valid response text";
+      const assistantMsg: Message = {
         sender: "assistant",
-        content: "⚠️ Something went wrong. Please try again later.",
+        content: msg,
         timestamp: getTime(),
-      },
-    ]);
-  } finally {
-    setTyping(false);
-  }
-};
+      };
+
+      setMessages((prev) => [...prev, assistantMsg]);
+    } catch (error) {
+      console.error("Error:", error);
+      setMessages((prev) => [
+        ...prev,
+        {
+          sender: "assistant",
+          content: "⚠️ Something went wrong. Please try again later.",
+          timestamp: getTime(),
+        },
+      ]);
+    } finally {
+      setTyping(false);
+    }
+  };
 
 
 
@@ -145,21 +159,51 @@ const ChatInterface: React.FC = () => {
   };
 
   return (
-    <div className="flex h-full min-h-[420px] w-full flex-col bg-gradient-to-br from-[#0b1120] via-[#0f172a] to-[#1e293b] text-white font-sans relative overflow-hidden rounded-xl">
-      <div className="absolute inset-0 opacity-10 bg-[url('/background-grid.svg')] bg-cover" />
+    <div
+      className={`relative flex h-full min-h-0 w-full flex-col overflow-hidden font-sans text-foreground ${
+        docked
+          ? "bg-transparent"
+          : "rounded-xl border border-border bg-background dark:border-white/10 dark:bg-gradient-to-br dark:from-[#0b1120] dark:via-[#0f172a] dark:to-[#1e293b]"
+      }`}
+    >
+      {!docked && (
+        <div className="pointer-events-none absolute inset-0 hidden bg-[url('/background-grid.svg')] bg-cover opacity-10 dark:block" />
+      )}
 
-      <div className="relative z-10 mx-auto flex w-full max-w-3xl min-h-0 flex-1 flex-col px-4 py-4 md:py-6">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-4">
-          <h1 className="text-2xl font-bold">🧠 FinGPT</h1>
-          <div className="flex gap-2 items-center">
+      <div
+        className={`relative z-10 mx-auto flex min-h-0 w-full max-w-3xl flex-1 flex-col px-4 py-4 md:py-6 ${docked ? "px-3 py-3 md:px-3 md:py-3" : ""}`}
+      >
+        {/* Header — hidden in dock (ChatDock provides title + actions) */}
+        {!docked ? (
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <h1 className="text-2xl font-bold text-foreground">🧠 FinGPT</h1>
+            <div className="flex min-w-0 flex-1 justify-end">
+              <select
+                className="max-w-[min(100%,220px)] rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 dark:bg-card"
+                value={selectedAgent.name}
+                onChange={(e) =>
+                  setSelectedAgent(agents.find((a) => a.name === e.target.value) || agents[0])
+                }
+              >
+                {agents.map((a) => (
+                  <option key={a.name} value={a.name}>
+                    {a.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        ) : (
+          <div className="mb-2 shrink-0">
+            <label htmlFor="chat-agent-dock" className="sr-only">
+              Assistant agent
+            </label>
             <select
-              className="bg-[#1e293b] text-white border border-gray-700 rounded-md px-3 py-2 text-sm"
+              id="chat-agent-dock"
+              className="w-full rounded-lg border border-input bg-background px-2.5 py-2 text-xs text-foreground shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 dark:bg-card"
               value={selectedAgent.name}
               onChange={(e) =>
-                setSelectedAgent(
-                  agents.find((a) => a.name === e.target.value) || agents[0]
-                )
+                setSelectedAgent(agents.find((a) => a.name === e.target.value) || agents[0])
               }
             >
               {agents.map((a) => (
@@ -169,12 +213,12 @@ const ChatInterface: React.FC = () => {
               ))}
             </select>
           </div>
-        </div>
+        )}
 
         {/* Chat Container */}
-        <div className="min-h-0 flex-1 space-y-4 overflow-y-auto rounded-xl border border-white/10 bg-[#1e293b]/70 p-4 shadow-xl backdrop-blur-lg md:p-6">
+        <div className="min-h-0 flex-1 space-y-4 overflow-y-auto rounded-xl border border-border bg-card p-4 shadow-sm dark:border-white/10 dark:bg-card/80 dark:shadow-xl dark:backdrop-blur-lg md:p-6">
           {messages.length === 0 && (
-            <div className="text-gray-400 text-center text-sm mt-20">
+            <div className="text-muted-foreground text-center text-sm mt-20">
               <p className="mb-1">💡 Try asking something like:</p>
               <p>“What’s my spending this month?” or “Show me investment performance”</p>
             </div>
@@ -190,12 +234,16 @@ const ChatInterface: React.FC = () => {
               <div
                 className={`max-w-sm rounded-lg px-4 py-3 text-sm shadow-md ${
                   msg.sender === "user"
-                    ? "bg-accentBlue text-white"
-                    : "bg-[#0f172a] border border-gray-700 text-gray-200"
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-muted border border-border text-card-foreground"
                 }`}
               >
-                <div className="text-xs opacity-60 mb-1">
-                  {msg.sender === "user" ? "You" : selectedAgent.name} • {msg.timestamp}
+                <div
+                  className={`mb-1 text-xs ${
+                    msg.sender === "user" ? "text-primary-foreground/75" : "text-muted-foreground"
+                  }`}
+                >
+                  {msg.sender === "user" ? "You" : selectedAgent.name} · {msg.timestamp}
                 </div>
                 {msg.content}
               </div>
@@ -203,7 +251,7 @@ const ChatInterface: React.FC = () => {
           ))}
 
           {typing && (
-            <div className="text-sm text-gray-400 animate-pulse">Assistant is typing...</div>
+            <div className="text-sm text-muted-foreground animate-pulse">Assistant is typing...</div>
           )}
 
           <div ref={messagesEndRef} />
@@ -213,7 +261,7 @@ const ChatInterface: React.FC = () => {
         {/* Input */}
         <div className="mt-4 flex items-center gap-2">
           <input
-            className="flex-1 px-4 py-3 bg-[#0f172a] border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-accentBlue"
+            className="fi-input flex-1 border-input bg-background py-3 dark:bg-muted"
             placeholder="Ask something..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
@@ -221,7 +269,7 @@ const ChatInterface: React.FC = () => {
           />
           <button
             onClick={handleSend}
-            className="px-5 py-3 bg-accentBlue hover:bg-accentBlue/90 rounded-lg text-white font-medium"
+            className="rounded-lg bg-primary px-5 py-3 font-medium text-primary-foreground transition hover:opacity-95"
           >
             <Send className="w-5 h-5" />
           </button>

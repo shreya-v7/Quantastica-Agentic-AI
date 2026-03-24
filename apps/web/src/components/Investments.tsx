@@ -84,12 +84,12 @@ export default function InvestmentsPage() {
       </div>
 
       {/* Detailed investments table */}
-      <section className="bg-[#161b22] p-6 rounded-2xl shadow-lg glass">
+      <section className="bg-card p-6 rounded-2xl shadow-lg glass">
         <h2 className="text-2xl font-semibold mb-6">Investment Details</h2>
         <div className="overflow-x-auto">
-          <table className="min-w-full border-collapse border border-gray-700 rounded-md">
+          <table className="min-w-full border-collapse border border-border rounded-md">
             <thead>
-              <tr className="border-b border-gray-700">
+              <tr className="border-b border-border">
                 <th className="px-4 py-3">Type</th>
                 <th className="px-4 py-3">Name</th>
                 <th className="px-4 py-3">Amount Invested</th>
@@ -105,7 +105,7 @@ export default function InvestmentsPage() {
                 return (
                   <tr
                     key={inv.id}
-                    className="border-b border-gray-700 hover:bg-accent/20 transition cursor-pointer"
+                    className="border-b border-border hover:bg-accent/20 transition cursor-pointer"
                   >
                     <td className="px-4 py-3 capitalize">{inv.type}</td>
                     <td className="px-4 py-3 font-semibold">{inv.name}</td>
@@ -140,7 +140,7 @@ function SummaryCard({
 }) {
   return (
     <div
-      className={`group bg-[#161b22] rounded-xl p-6 shadow-lg border border-gray-700 flex flex-col gap-3 hover:shadow-accent hover:-translate-y-1 hover:scale-105 transition-transform duration-300 cursor-default glass`}
+      className={`group bg-card rounded-xl p-6 shadow-lg border border-border flex flex-col gap-3 hover:shadow-accent hover:-translate-y-1 hover:scale-105 transition-transform duration-300 cursor-default glass`}
     >
       <div className="flex items-center gap-3">{icon}</div>
       <h3 className="text-lg font-semibold">{title}</h3>

@@ -16,6 +16,7 @@ google-cloud-speech
 google-cloud-storage
 google-cloud-aiplatform
 vertexai
+deprecated  # transitive dep of google-adk (base_tool); pin if resolver omits it
 google-adk[database]==0.3.0
 google-generativeai==0.8.5
 
@@ -25,6 +26,7 @@ firebase-admin
 # --- Trading ---
 alpaca-py
 yfinance==0.2.56
+nsepython  # chart_analyzer market_data_fetcher (NSE India equity_history)
 
 # --- Data / Analysis ---
 pandas
