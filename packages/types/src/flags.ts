@@ -1,4 +1,4 @@
-import type { CloudProvider } from "@quantastica/config";
+import type { CloudProvider } from "./config";
 
 export type { CloudProvider };
 

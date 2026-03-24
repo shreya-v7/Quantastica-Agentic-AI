@@ -1,10 +1,7 @@
 /**
  * TypeScript contract for cloud adapters. Implementations live in `apps/server`
- * (`app/financial_intelligence/cloud/`). This package is types-only.
+ * (`app/financial_intelligence/cloud/`).
  */
-export type { CloudProvider } from "@quantastica/config";
-export { CONFIG } from "@quantastica/config";
-
 export interface CloudServices {
   queue(topic: string, payload: unknown): Promise<void>;
   store(key: string, value: unknown): Promise<void>;

@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 /**
  * Fails if packages/types/contracts.json version !== packages/types/package.json version.
- * Run: node scripts/check-contract-sync.mjs
+ * Run: node check-contract-sync.mjs  (or npm run check:contract)
  */
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const root = join(dirname(fileURLToPath(import.meta.url)), "..");
+const root = dirname(fileURLToPath(import.meta.url));
 const pkg = JSON.parse(readFileSync(join(root, "packages/types/package.json"), "utf8"));
 const contract = JSON.parse(readFileSync(join(root, "packages/types/contracts.json"), "utf8"));
 

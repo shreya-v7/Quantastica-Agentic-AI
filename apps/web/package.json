@@ -10,7 +10,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@quantastica/config": "workspace:*",
     "@quantastica/types": "workspace:*",
     "@tanstack/react-query": "^5.85.0",
     "axios": "^1.11.0",

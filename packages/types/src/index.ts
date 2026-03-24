@@ -1,4 +1,6 @@
 export { CONTRACT_VERSION } from "./version";
+export { CONFIG } from "./config";
+export type { CloudServices } from "./cloud";
 export type { CloudProvider, FeatureFlags } from "./flags";
 export type {
   FinancialSummary,

@@ -1,6 +1,8 @@
-# Dependencies & builds
+# Dependencies & builds (never commit — install locally)
 node_modules/
+**/node_modules/
 dist/
+**/dist/
 .vite/
 *.tsbuildinfo
 
