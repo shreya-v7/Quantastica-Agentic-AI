@@ -42,3 +42,5 @@ flask-cors
 litellm==1.66.3
 psutil==5.9.5
 requests
+PyJWT
+cryptography

@@ -1,0 +1,33 @@
+/* Fintech intelligence layer — complements Tailwind tokens */
+
+.fi-glow {
+  box-shadow:
+    0 0 0 1px hsl(var(--border) / 0.5),
+    0 24px 48px -12px hsl(220 60% 50% / 0.12);
+}
+
+.dark .fi-glow {
+  box-shadow:
+    0 0 0 1px hsl(var(--border) / 0.35),
+    0 24px 48px -12px hsl(220 80% 50% / 0.08);
+}
+
+.fi-shimmer {
+  background: linear-gradient(
+    90deg,
+    hsl(var(--muted) / 0.35) 0%,
+    hsl(var(--muted) / 0.15) 50%,
+    hsl(var(--muted) / 0.35) 100%
+  );
+  background-size: 200% 100%;
+  animation: fi-shimmer 1.2s ease-in-out infinite;
+}
+
+@keyframes fi-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}

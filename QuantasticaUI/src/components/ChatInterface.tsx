@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Send,
   LineChart,
@@ -64,9 +64,9 @@ const ChatInterface: React.FC = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  // useEffect(() => {
-  //   scrollToBottom();
-  // }, [messages, typing]);
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, typing]);
 
   const getTime = () => new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 
@@ -111,17 +111,12 @@ const ChatInterface: React.FC = () => {
       },
       streaming: false,
     };
-    console.log("🚀 Payload being sent to /run:", runPayload);
 
-    // Send the message
     const response = await axios.post(`http://${server}:${port}/run`, runPayload);
-
-    console.log("Response from agent:", response.data);
 
     const dataArray = response.data;
     const msg = dataArray?.[dataArray.length - 1]?.content?.parts?.[0]?.text || "No valid response text";
-      console.log("Result text:", msg);
-      const assistantMsg: Message = {
+    const assistantMsg: Message = {
       sender: "assistant",
       content: msg,
       timestamp: getTime(),
@@ -150,10 +145,10 @@ const ChatInterface: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-[#0b1120] via-[#0f172a] to-[#1e293b] text-white font-sans relative overflow-hidden">
+    <div className="flex h-full min-h-[420px] w-full flex-col bg-gradient-to-br from-[#0b1120] via-[#0f172a] to-[#1e293b] text-white font-sans relative overflow-hidden rounded-xl">
       <div className="absolute inset-0 opacity-10 bg-[url('/background-grid.svg')] bg-cover" />
 
-      <div className="max-w-3xl mx-auto px-4 py-6 relative z-10 flex flex-col min-h-screen">
+      <div className="relative z-10 mx-auto flex w-full max-w-3xl min-h-0 flex-1 flex-col px-4 py-4 md:py-6">
         {/* Header */}
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-2xl font-bold">🧠 FinGPT</h1>
@@ -177,7 +172,7 @@ const ChatInterface: React.FC = () => {
         </div>
 
         {/* Chat Container */}
-        <div className="flex-1 overflow-y-auto bg-[#1e293b]/70 border border-white/10 rounded-xl p-6 backdrop-blur-lg shadow-xl space-y-4">
+        <div className="min-h-0 flex-1 space-y-4 overflow-y-auto rounded-xl border border-white/10 bg-[#1e293b]/70 p-4 shadow-xl backdrop-blur-lg md:p-6">
           {messages.length === 0 && (
             <div className="text-gray-400 text-center text-sm mt-20">
               <p className="mb-1">💡 Try asking something like:</p>

@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Bot, Newspaper, Users, Shield, BarChart, FileText, Calendar, User, Menu, X } from 'lucide-react';
+import { Home, Bot, Newspaper, Users, Shield, BarChart, FileText, Calendar, User, Menu, X, Sparkles } from 'lucide-react';
 
 const navItems = [
   { name: 'Dashboard', icon: Home, path: '/dashboard' },
+  { name: 'Insights', icon: Sparkles, path: '/insights' },
   { name: 'Chat', icon: Bot, path: '/chat' },
   { name: 'News Analysis', icon: Newspaper, path: '/news' },
   { name: 'Group Investments', icon: Users, path: '/group-investments' },
