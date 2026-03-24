@@ -1,5 +1,5 @@
 {
-  "name": "@quantastica/types",
+  "name": "@quantastica/config",
   "version": "1.0.0",
   "private": true,
   "type": "module",
@@ -13,10 +13,6 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.json"
-  },
-  "dependencies": {
-    "@quantastica/config": "workspace:*",
-    "zod": "^3.24.0"
   },
   "devDependencies": {
     "typescript": "~5.8.3"

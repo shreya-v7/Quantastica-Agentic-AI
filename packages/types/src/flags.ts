@@ -1,4 +1,6 @@
-export type CloudProvider = "aws" | "azure" | "gcp";
+import type { CloudProvider } from "@quantastica/config";
+
+export type { CloudProvider };
 
 export type FeatureFlags = {
   cloud: CloudProvider;

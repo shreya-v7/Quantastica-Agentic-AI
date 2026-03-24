@@ -6,7 +6,7 @@
 |----------|------|
 | `contracts.json` | Canonical semver — Python reads this via `app/contracts/version.py` |
 | `src/*.ts` | TypeScript types + Zod parsers for the UI |
-| `dist/` | Build output consumed by `QuantasticaUI` |
+| `dist/` | Build output consumed by `apps/web` (`@quantastica/web`) |
 
 Bump **`contracts.json`** and **`package.json` version** together; update FastAPI `read_contract_version()` consumers and redeploy UI + API together on mismatch.
 
