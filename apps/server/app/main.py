@@ -1,71 +1,127 @@
-"""
-Quantastica API -- FastAPI application entry point.
+"""Application entry point. Wires settings, logging, middleware, routes, and the
+central exception handler that maps typed errors to the response envelope."""
 
-Start with:
-    uvicorn app.main:app --reload --port 8000
-"""
+from __future__ import annotations
 
 import logging
+from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from sqlalchemy import text
 
-log = logging.getLogger(__name__)
+from app import __version__
+from app.core.config import Settings, get_settings
+from app.core.envelope import failure, success
+from app.core.errors import AppError, RateLimitedError
+from app.core.logging import configure_logging
+from app.core.middleware import AuthMiddleware, RequestIdMiddleware
+from app.infra.factory import build_container
+from app.routes import agents, calc, dev, health, insights, market, platform, portfolios, seed
 
-app = FastAPI(
-    title="Quantastica API",
-    description="Unified AI-powered financial intelligence platform",
-    version="1.0.0",
-)
-
-# -- CORS --
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-# -- Core ADK routes (always loaded) --
-from app.routes import prompt, sessions, data  # noqa: E402
-from app.routes import config as config_routes  # noqa: E402
-from app.routes import demo as demo_routes  # noqa: E402
-from app.financial_intelligence.api import routes as fi_routes  # noqa: E402
-from app.contracts.version import CONTRACT_VERSION  # noqa: E402
-
-app.include_router(config_routes.router)
-app.include_router(demo_routes.router)
-app.include_router(sessions.router, prefix="/sessions", tags=["Sessions"])
-app.include_router(prompt.router, prefix="/prompt", tags=["Prompt"])
-app.include_router(data.router, prefix="/data", tags=["Data"])
-app.include_router(fi_routes.router, tags=["Financial Intelligence"])
-
-# -- Optional: Firestore (requires firebase-admin + credentials) --
-try:
-    from app.routes import firestore  # noqa: E402
-
-    app.include_router(firestore.router, prefix="/firestore", tags=["Firestore"])
-    log.info("Firestore route loaded.")
-except Exception as exc:
-    log.warning("Firestore route not loaded (Firebase credentials missing or "
-                "firebase-admin not installed): %s", exc)
-
-# -- Optional: WebSocket streaming (requires yfinance) --
-try:
-    from app.routes import streaming  # noqa: E402
-
-    app.include_router(streaming.router, tags=["Streaming"])
-    log.info("Streaming route loaded.")
-except Exception as exc:
-    log.warning("Streaming route not loaded (yfinance not installed): %s", exc)
+logger = logging.getLogger("quantastica.app")
 
 
-@app.get("/health")
-def health_check():
-    """Simple health-check endpoint."""
-    return {
-        "status": "ok",
-        "service": "quantastica-api",
-        "version": CONTRACT_VERSION,
-    }
+def create_app(settings: Settings | None = None) -> FastAPI:
+    settings = settings or get_settings()
+    configure_logging(settings.app_env, settings.log_level)
+
+    @asynccontextmanager
+    async def lifespan(app: FastAPI):
+        yield
+        await app.state.container.close()
+
+    app = FastAPI(
+        title="Quantastica API",
+        version=__version__,
+        docs_url="/docs" if settings.docs_enabled else None,
+        redoc_url=None,
+        openapi_url="/openapi.json" if settings.docs_enabled else None,
+        lifespan=lifespan,
+    )
+    app.state.settings = settings
+    app.state.container = build_container(settings)
+
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=settings.cors_origin_list,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+    app.add_middleware(AuthMiddleware, settings=settings)
+    app.add_middleware(RequestIdMiddleware)
+
+    for router in (
+        health.router,
+        platform.router,
+        portfolios.router,
+        insights.router,
+        agents.router,
+        market.router,
+        calc.router,
+        seed.router,
+    ):
+        app.include_router(router, prefix="/api")
+
+    if not settings.is_prod:
+        app.include_router(dev.router)
+
+    @app.get("/api/ready")
+    async def ready(request: Request) -> JSONResponse:
+        """Readiness: DB and Redis reachable. Deploys gate on this."""
+        container = request.app.state.container
+        checks: dict[str, bool] = {}
+        try:
+            engine = getattr(container.repository, "engine", None)
+            async with engine.connect() as conn:  # type: ignore[union-attr]
+                await conn.execute(text("SELECT 1"))
+            checks["database"] = True
+        except Exception:
+            checks["database"] = False
+        try:
+            await container.cache.ping()
+            checks["redis"] = True
+        except Exception:
+            checks["redis"] = False
+        ok = all(checks.values())
+        body = success({"ready": ok, "checks": checks})
+        return JSONResponse(status_code=200 if ok else 503, content=body)
+
+    _register_exception_handlers(app)
+    logger.info(
+        "Quantastica started: env=%s platform=%s ready=%s",
+        settings.app_env,
+        settings.platform.value,
+        app.state.container.status().ready,
+    )
+    return app
+
+
+def _register_exception_handlers(app: FastAPI) -> None:
+    @app.exception_handler(AppError)
+    async def _app_error(_: Request, exc: AppError) -> JSONResponse:
+        headers = {}
+        if isinstance(exc, RateLimitedError):
+            headers["Retry-After"] = str(exc.retry_after_seconds)
+        return JSONResponse(
+            status_code=exc.status_code,
+            content=failure(exc.code, exc.message),
+            headers=headers,
+        )
+
+    @app.exception_handler(RequestValidationError)
+    async def _validation(_: Request, exc: RequestValidationError) -> JSONResponse:
+        return JSONResponse(status_code=422, content=failure("VALIDATION_ERROR", str(exc.errors())))
+
+    @app.exception_handler(Exception)
+    async def _unhandled(_: Request, exc: Exception) -> JSONResponse:
+        logger.exception("Unhandled error: %s", exc)
+        return JSONResponse(
+            status_code=500,
+            content=failure("INTERNAL_ERROR", "An unexpected error occurred."),
+        )
+
+
+app = create_app()

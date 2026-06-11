@@ -1,0 +1,142 @@
+[
+  {
+    "id": "tx_th_rel_1",
+    "portfolioId": "pf_tech_heavy",
+    "symbol": "RELIANCE.NS",
+    "type": "buy",
+    "quantity": 200,
+    "price": 2300,
+    "timestamp": "2024-01-15T10:00:00+05:30",
+    "seed": true
+  },
+  {
+    "id": "tx_th_rel_2",
+    "portfolioId": "pf_tech_heavy",
+    "symbol": "RELIANCE.NS",
+    "type": "buy",
+    "quantity": 200,
+    "price": 2500,
+    "timestamp": "2024-06-10T10:00:00+05:30",
+    "seed": true
+  },
+  {
+    "id": "tx_th_tcs_1",
+    "portfolioId": "pf_tech_heavy",
+    "symbol": "TCS.NS",
+    "type": "buy",
+    "quantity": 250,
+    "price": 3300,
+    "timestamp": "2024-02-01T10:00:00+05:30",
+    "seed": true
+  },
+  {
+    "id": "tx_th_infy_1",
+    "portfolioId": "pf_tech_heavy",
+    "symbol": "INFY.NS",
+    "type": "buy",
+    "quantity": 300,
+    "price": 1280,
+    "timestamp": "2024-03-01T10:00:00+05:30",
+    "seed": true
+  },
+  {
+    "id": "tx_th_infy_2",
+    "portfolioId": "pf_tech_heavy",
+    "symbol": "INFY.NS",
+    "type": "buy",
+    "quantity": 300,
+    "price": 1420,
+    "timestamp": "2024-09-01T10:00:00+05:30",
+    "seed": true
+  },
+  {
+    "id": "tx_th_hcl_1",
+    "portfolioId": "pf_tech_heavy",
+    "symbol": "HCLTECH.NS",
+    "type": "buy",
+    "quantity": 500,
+    "price": 1100,
+    "timestamp": "2024-04-01T10:00:00+05:30",
+    "seed": true
+  },
+  {
+    "id": "tx_th_elxsi_1",
+    "portfolioId": "pf_tech_heavy",
+    "symbol": "TATAELXSI.NS",
+    "type": "buy",
+    "quantity": 100,
+    "price": 7200,
+    "timestamp": "2024-05-01T10:00:00+05:30",
+    "seed": true
+  },
+  {
+    "id": "tx_th_zomato_1",
+    "portfolioId": "pf_tech_heavy",
+    "symbol": "ZOMATO.NS",
+    "type": "buy",
+    "quantity": 2000,
+    "price": 120,
+    "timestamp": "2024-02-15T10:00:00+05:30",
+    "seed": true
+  },
+  {
+    "id": "tx_bal_hdfc_1",
+    "portfolioId": "pf_balanced",
+    "symbol": "HDFCBANK.NS",
+    "type": "buy",
+    "quantity": 300,
+    "price": 1500,
+    "timestamp": "2024-01-10T10:00:00+05:30",
+    "seed": true
+  },
+  {
+    "id": "tx_bal_itc_1",
+    "portfolioId": "pf_balanced",
+    "symbol": "ITC.NS",
+    "type": "buy",
+    "quantity": 800,
+    "price": 380,
+    "timestamp": "2024-01-20T10:00:00+05:30",
+    "seed": true
+  },
+  {
+    "id": "tx_bal_nifty_1",
+    "portfolioId": "pf_balanced",
+    "symbol": "NIFTYBEES.NS",
+    "type": "buy",
+    "quantity": 750,
+    "price": 210,
+    "timestamp": "2024-02-05T10:00:00+05:30",
+    "seed": true
+  },
+  {
+    "id": "tx_bal_nifty_2",
+    "portfolioId": "pf_balanced",
+    "symbol": "NIFTYBEES.NS",
+    "type": "buy",
+    "quantity": 750,
+    "price": 230,
+    "timestamp": "2024-08-05T10:00:00+05:30",
+    "seed": true
+  },
+  {
+    "id": "tx_bal_gold_1",
+    "portfolioId": "pf_balanced",
+    "symbol": "GOLDBEES.NS",
+    "type": "buy",
+    "quantity": 2000,
+    "price": 52,
+    "timestamp": "2024-03-15T10:00:00+05:30",
+    "seed": true
+  },
+  {
+    "id": "tx_bal_sun_1",
+    "portfolioId": "pf_balanced",
+    "symbol": "SUNPHARMA.NS",
+    "type": "buy",
+    "quantity": 200,
+    "price": 1100,
+    "timestamp": "2024-04-20T10:00:00+05:30",
+    "seed": true
+  }
+]

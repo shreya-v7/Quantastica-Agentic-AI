@@ -1,150 +1,137 @@
 # Quantastica
 
-Monorepo: **one FastAPI service** (`apps/server`), **one Vite SPA** (`apps/web`), **one shared TS package** (`packages/types`). No microservices.
+Quantastica is an agentic financial intelligence platform. You ask a natural language
+question about a portfolio ("How concentrated is my AI portfolio?") and an agent
+pipeline analyzes the actual portfolio data, then returns a structured, explainable
+answer with a full execution trace.
 
-## Layout
+The same codebase runs locally with no cloud account, on GCP, or on AWS, selected by one
+environment variable (`PLATFORM`).
+
+## Architecture
+
+Clean layered partition. Dependencies point downward only.
 
 ```
-.
-├── apps/
-│   ├── server/              # Python FastAPI + agents + financial_intelligence
-│   └── web/                 # React + Vite UI (@quantastica/web)
-├── packages/
-│   └── types/               # contracts.json + Zod + CloudProvider/CONFIG + CloudServices type
-├── check-contract-sync.mjs  # CI: contract version drift check
-├── package.json             # npm workspaces
-├── tsconfig.base.json
-└── README.md
+routes      HTTP only: parse, call service, wrap envelope
+  services  business logic, orchestration entry
+  agents    Planner, Researcher, Risk, Insight, Summarizer, Orchestrator
+  infra
+    repo    data access (SQLite local, Firestore gcp, DynamoDB aws)
+    llm     LLM client (Anthropic local, Vertex AI gcp, Bedrock aws)
+    events  event publisher (in-process local, Pub/Sub gcp, SQS aws)
+    storage blob storage for exports (local disk, GCS gcp, S3 aws)
 ```
 
-| Area | Path |
-|------|------|
-| Insight engine, events, FI API | `apps/server/app/financial_intelligence/` |
-| ADK agents | `apps/server/app/agents/` |
-| HTTP routes | `apps/server/app/routes/` + `main.py` |
-| UI | `apps/web/` |
-| Contract version | `packages/types/contracts.json` (read by `apps/server/app/contracts/version.py`) |
+Each infrastructure concern is one small interface with three real implementations. A
+factory reads `PLATFORM` (`local | gcp | aws`) and wires the matching set. Local is a
+real implementation: SQLite is a real database, local disk is real storage, the Anthropic
+API is a real LLM.
 
-## Prerequisites
+See [docs/architecture.md](docs/architecture.md) and
+[docs/agentic-design.md](docs/agentic-design.md) for detail.
 
-- Node **20+**
-- Python **3.11+**
-- **npm 7+** (workspaces; run `npm install` from the repo root)
+## Local setup (no cloud account needed)
 
----
-
-## Run the app (local)
-
-**1. Install the UI workspace and build shared types**
-
-```bash
-cd /path/to/Quantastica-Agentic-AI
-npm install
+```
+git clone <repo> && cd quantastica
+make setup        # npm install (builds types), python venv, pip install, copies .env.example to .env
+# add ANTHROPIC_API_KEY=sk-... to apps/server/.env (the only required secret locally)
+make seed         # loads flagged seed data into SQLite
+make dev          # starts API :8000 and web :5173 together
 ```
 
-(`postinstall` runs `npm run build:types` so `@quantastica/types` is ready for the web app.)
+Smoke test:
 
-**2. Backend  - venv, deps, env**
-
-```bash
-cd apps/server
-python -m venv .venv
-source .venv/bin/activate          # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
-cp .env.example .env               # edit .env as needed
+```
+curl localhost:8000/api/health
+curl localhost:8000/api/platform
+curl -X POST localhost:8000/api/agents/run -H 'content-type: application/json' \
+  -d '{"query":"How concentrated is my AI portfolio?","portfolioId":"pf_tech_heavy"}'
 ```
 
-**3. Start API (terminal 1)**
+Then open localhost:5173, run the same query on the Agents page, and watch the trace.
 
-Use the **same Python** you used for `pip` (avoids “no module named fastapi” when a global `uvicorn` is on your PATH):
+Alternative: `docker compose up` (set `ANTHROPIC_API_KEY` in your shell first) runs the
+full stack with one command, then load seed data with
+`curl -X POST localhost:8000/api/seed/load`.
 
-```bash
-cd apps/server
-source .venv/bin/activate          # Windows: .venv\Scripts\activate
-python -m pip install -r requirements.txt   # run again if anything failed earlier
-python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+## GCP
+
+1. Service account with least privilege roles: `roles/datastore.user`,
+   `roles/pubsub.publisher`, `roles/storage.objectAdmin` (scoped to one bucket),
+   `roles/aiplatform.user`.
+2. Enable APIs:
+   `gcloud services enable firestore.googleapis.com pubsub.googleapis.com storage.googleapis.com aiplatform.googleapis.com`
+3. Env: `PLATFORM=gcp`, `GCP_PROJECT`, `GCP_REGION`, `GCS_BUCKET`, `PUBSUB_TOPIC`,
+   `VERTEX_MODEL` (default a Claude model on Vertex). Credentials via Application Default
+   Credentials or Workload Identity, never a key file in the repo.
+4. Deploy: backend to Cloud Run (secrets from Secret Manager), frontend
+   `npm run build:web` with `VITE_API_URL=<cloud run url>` to Firebase Hosting.
+5. Verify with `GET /api/platform` showing all four components ready, then run the smoke
+   test against the Cloud Run URL.
+
+See [docs/cloud-gcp.md](docs/cloud-gcp.md).
+
+## AWS
+
+1. IAM role with least privilege inline policies scoped to one DynamoDB table prefix, one
+   SQS queue, one S3 bucket, and `bedrock:InvokeModel` on the chosen model. The exact
+   policy is in [docs/cloud-aws.md](docs/cloud-aws.md). No FullAccess policies.
+2. Env: `PLATFORM=aws`, `AWS_REGION`, `DDB_TABLE_PREFIX`, `SQS_QUEUE_URL`, `S3_BUCKET`,
+   `BEDROCK_MODEL_ID=anthropic.claude-3-haiku-20240307-v1:0`. Credentials via the role
+   (ECS task role or Lambda execution role), never static keys in prod.
+3. Deploy: backend container to ECS Fargate (or Lambda plus API Gateway via Mangum),
+   frontend `aws s3 sync apps/web/dist s3://<bucket>` behind CloudFront with `VITE_API_URL`
+   set at build time.
+4. Verify with `GET /api/platform`, then the smoke test against the public URL.
+
+## API
+
+Every `/api/*` response uses one envelope:
+
+```json
+{ "ok": true, "data": {}, "error": null, "meta": { "requestId": "...", "version": "2.0.0" } }
 ```
 
-**4. Start UI (terminal 2, from repo root)**
+Typed errors map to stable codes: `NOT_FOUND`, `VALIDATION_ERROR`, `LLM_ERROR`,
+`PLATFORM_NOT_CONFIGURED`, `AUTH_REQUIRED`, `INTERNAL_ERROR`. Stack traces and secret
+values are never leaked. Every request carries `X-Request-ID`, propagated to logs.
 
-```bash
-cd /path/to/Quantastica-Agentic-AI
-npm install          # once per clone; builds shared types via postinstall
-npm run dev:web
+Endpoints: `GET /api/health`, `GET /api/platform`, `GET /api/portfolios`,
+`GET /api/portfolios/{id}`, `GET /api/insights?portfolioId=&severity=`,
+`POST /api/agents/run`, `GET /api/agents/runs`, `GET /api/agents/runs/{id}`,
+`POST /api/agents/runs/{id}/export`, `POST /api/seed/load`, `POST /api/seed/reset`.
+
+## Dev vs prod
+
+`APP_ENV` is `dev` or `prod`. Startup validates and fails fast, naming the exact missing
+variable.
+
+| Concern | dev | prod |
+|---|---|---|
+| PLATFORM | `local` default | `gcp` or `aws`, all required vars present or startup aborts |
+| Auth | `REQUIRE_AUTH=false` allowed, `/dev/session` active | forced on, JWT secret 32+ bytes, `/dev/session` excluded |
+| CORS | localhost origins | explicit `CORS_ORIGINS`, refuses `*` |
+| Seed endpoints | enabled | disabled unless `ALLOW_SEED=true` |
+| Logging | readable console | structured JSON with request ids |
+| OpenAPI /docs | on | off |
+
+## Seed data
+
+Seed data lives in exactly one place: `apps/server/app/seed/`. Every record is flagged
+`"seed": true`. Loading is always an explicit action (`make seed`, `python -m app.seed`,
+or `POST /api/seed/load`), never automatic in prod. Nothing else in the codebase
+fabricates data. The only other permitted fake is the deterministic LLM test double under
+`apps/server/tests/`, which never ships in `app/`.
+
+## Testing
+
+```
+make check        # lint, typecheck, tests, contract check, and the em dash check
+make test         # backend pytest plus frontend vitest
 ```
 
-| Service | URL |
-|---------|-----|
-| API | http://localhost:8000 |
-| UI | http://localhost:5173 |
-
-Dev: the UI proxies `/api/*` to the API (`apps/web/vite.config.ts`).
-
----
-
-## Development vs production
-
-| Topic | **Development** | **Production** |
-|-------|-----------------|----------------|
-| **UI** | `npm run dev:web` (Vite, hot reload, `import.meta.env.DEV === true`) | `npm run build:web` → deploy the `apps/web/dist/` folder (Firebase Hosting, S3+CDN, etc.) |
-| **API** | `python -m uvicorn app.main:app --reload` from `apps/server` | Same app behind gunicorn/Cloud Run/etc., with real `BASE_URL`, secrets, and HTTPS |
-| **API URL in the browser** | Defaults to same origin via Vite proxy (`/api` → `localhost:8000`) | Set **`VITE_API_URL`** at build time to your public API origin (no `/api` suffix; see `apps/web/src/lib/apiUrl.ts`) |
-| **Auth bypass** | **`/dev/session`** is available on the dev server only (see below) | Disabled: production bundles never set a dummy session from that route |
-
-Preview a production build locally: `npm run build:web` then `npm run preview -w @quantastica/web` (or `vite preview` inside `apps/web`).
-
----
-
-## Credentials in development
-
-### Web UI: Firebase sign-in (`/auth`)
-
-The client loads Firebase from `apps/web/src/auth/firebase.ts` (normal for client SDKs: that file holds the **public** web config, not admin secrets).
-
-- **Sign up** or **sign in** at **`http://localhost:5173/auth`** with any email/password allowed by your Firebase project (enable Email/Password in Firebase Console → Authentication → Sign-in method).
-- Use **test accounts** you create in the [Firebase Console](https://console.firebase.google.com) or via the on-page sign-up flow.
-
-### Web UI: skip login (dev only)
-
-For layout and dashboard work **without** creating a Firebase user:
-
-1. Run the **dev** server: `npm run dev:web`.
-2. Open **`http://localhost:5173/dev/session`**.
-
-That sets a dummy `userId` in `localStorage` and redirects to `/dashboard`. It **does not** authenticate with Firebase; it is ignored in production builds (`/dev/session` redirects home).
-
-### Backend: `apps/server/.env`
-
-1. `cp apps/server/.env.example apps/server/.env`
-2. Fill variables your features need. For a minimal local API, many entries can stay empty; **GCP / Alpaca / Twilio** are only required when you exercise those integrations.
-
-**API troubleshooting:** If you see `ModuleNotFoundError: No module named 'fastapi'`, your venv is missing deps or a different Python is running `uvicorn`. After `source .venv/bin/activate`, run `python -m pip show fastapi`  - if empty, run `python -m pip install -r requirements.txt` again. Prefer **`python -m uvicorn`** (not bare `uvicorn`) so the server uses the venv’s packages.
-
-**npm `EUNSUPPORTEDPROTOCOL` / `workspace:`:** Install from the **repo root** with **npm 7+** (`npm -v`). Upgrade if needed: `npm install -g npm@10`. The web app links `@quantastica/types` via `file:../../packages/types` so it resolves without the `workspace:*` protocol.
-
----
-
-## npm scripts (repo root)
-
-| Script | Purpose |
-|--------|---------|
-| `npm run dev:web` | Vite dev server |
-| `npm run build:web` | Production UI build |
-| `npm run build:types` | Build `@quantastica/types` |
-| `npm run check:contract` | `contracts.json` ↔ `package.json` version (`check-contract-sync.mjs`) |
-
-## Environment
-
-**Server:** `apps/server/.env`  - see `apps/server/.env.example` (`CLOUD_PROVIDER`, GCP, `FI_*`, etc.).
-
-**UI:** optional `VITE_API_URL` for production API origin (no `/api` prefix). Runtime flags come from `GET /config`.
-
-## Contracts
-
-- **Version:** `packages/types/contracts.json` must match `packages/types/package.json` version; run `npm run check:contract` in CI before deploy.
-- **Types:** `@quantastica/types`  - Zod on client, Pydantic mirrors on server; also exports `CloudProvider`, `CONFIG`, and the `CloudServices` interface (Python adapters live under `apps/server/app/financial_intelligence/cloud/`).
-
-## Docs
-
-- UI: [`apps/web/README.md`](apps/web/README.md)
-- Types: [`packages/types/README.md`](packages/types/README.md)
+All tests pass offline with `PLATFORM=local` and a fake LLM injected in tests only. The
+Firestore and DynamoDB implementations are tested against their official local emulators
+in CI (firestore emulator and dynamodb-local), not mocked out.

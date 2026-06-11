@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    services:
+      dynamodb:
+        image: amazon/dynamodb-local:2.5.2
+        ports:
+          - 8000:8000
+    env:
+      FIRESTORE_EMULATOR_HOST: localhost:8080
+      GCP_PROJECT: quantastica-test
+      DDB_ENDPOINT_URL: http://localhost:8000
+      AWS_ACCESS_KEY_ID: dummy
+      AWS_SECRET_ACCESS_KEY: dummy
+      AWS_DEFAULT_REGION: us-east-1
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Start firestore emulator
+        run: |
+          docker run -d --name firestore -p 8080:8080 \
+            gcr.io/google.com/cloudsdktool/google-cloud-cli:emulators \
+            gcloud emulators firestore start --host-port=0.0.0.0:8080
+          for i in $(seq 1 30); do
+            if curl -s localhost:8080 >/dev/null; then break; fi
+            sleep 2
+          done
+      - name: Install dependencies
+        working-directory: apps/server
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt -r requirements-gcp.txt -r requirements-aws.txt
+      - name: Lint
+        working-directory: apps/server
+        run: ruff check app tests
+      - name: Tests (including cloud emulators)
+        working-directory: apps/server
+        run: pytest -q
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: npm install
+      - run: npm run build:types
+      - run: npm run lint -w @quantastica/web
+      - run: npm run typecheck -w @quantastica/web
+      - run: npm run test -w @quantastica/web
+      - run: npm run build:web
+
+  repo-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: npm run check:contract
+      - run: python scripts/check_no_emdash.py

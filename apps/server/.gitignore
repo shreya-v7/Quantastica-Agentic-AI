@@ -1,36 +1,8 @@
-# Dependencies
-node_modules/
-
-# IDE
-.idea/
-.vscode/
-
-# Python virtual environments
-venv/
-env/
 .venv/
-.env
-
-# Python bytecode
+venv/
 __pycache__/
-*.pyc
-*.pyo
-
-# Logs & temp
-nohup.out
-*.log
-
-# Secrets (NEVER commit these -- all credentials go in .env)
+*.py[cod]
 .env
-serviceAccountKey.json
-*.pem
-*.key
-
-# OS files
-.DS_Store
-Thumbs.db
-
-# Build artifacts
-dist/
-build/
-*.egg-info/
+var/
+.pytest_cache/
+.ruff_cache/

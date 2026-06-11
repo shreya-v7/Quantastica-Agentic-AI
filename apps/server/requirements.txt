@@ -1,48 +1,20 @@
-# ===========================================================
-# Quantastica API - Python Dependencies
-# ===========================================================
+# Core runtime (local platform). Cloud LLM/storage SDKs live in requirements-gcp.txt /
+# requirements-aws.txt. PostgreSQL and Redis are used on every platform.
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+gunicorn==23.0.0
+pydantic==2.10.4
+pydantic-settings==2.7.0
+anthropic==0.42.0
+httpx==0.28.1
+SQLAlchemy[asyncio]==2.0.36
+asyncpg==0.30.0
+alembic==1.14.0
+pgvector==0.3.6
+redis==5.2.1
+argon2-cffi==23.1.0
+PyJWT==2.10.1
+pyotp==2.9.0
+tenacity==9.0.0
+boto3==1.35.92
 
-# --- Web Framework ---
-fastapi
-uvicorn
-
-# --- Configuration ---
-pydantic-settings
-python-dotenv
-
-# --- Google Cloud / Vertex AI / ADK ---
-google-auth
-google-cloud-speech
-google-cloud-storage
-google-cloud-aiplatform
-vertexai
-deprecated  # transitive dep of google-adk (base_tool); pin if resolver omits it
-google-adk[database]==0.3.0
-google-generativeai==0.8.5
-
-# --- Firebase ---
-firebase-admin
-
-# --- Trading ---
-alpaca-py
-yfinance==0.2.56
-nsepython  # chart_analyzer market_data_fetcher (NSE India equity_history)
-
-# --- Data / Analysis ---
-pandas
-pandas-ta
-matplotlib
-plotly
-kaleido
-
-# --- Messaging ---
-twilio
-flask
-flask-cors
-
-# --- Misc ---
-litellm==1.66.3
-psutil==5.9.5
-requests
-PyJWT
-cryptography

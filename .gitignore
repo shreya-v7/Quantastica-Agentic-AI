@@ -17,6 +17,13 @@ __pycache__/
 .venv/
 venv/
 *.egg-info/
+.ruff_cache/
+.pytest_cache/
+
+# Runtime data (local SQLite + exports)
+var/
+**/var/
+*.db
 
 # Test / coverage
 coverage/

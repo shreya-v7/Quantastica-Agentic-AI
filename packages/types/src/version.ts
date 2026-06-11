@@ -1,4 +1,3 @@
-import contract from "../contracts.json";
+import { CONTRACT_VERSION } from "./common.js";
 
-/** Must match `packages/types/contracts.json` and backend contract reader. */
-export const CONTRACT_VERSION: string = contract.version;
+export { CONTRACT_VERSION };
