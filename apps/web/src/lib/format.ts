@@ -18,6 +18,14 @@ export function formatNumber(value: number, digits = 3): string {
   return value.toFixed(digits);
 }
 
+export function formatInr(value: number): string {
+  return new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+    maximumFractionDigits: 0,
+  }).format(value);
+}
+
 export function formatDate(iso: string): string {
   const date = new Date(iso);
   return Number.isNaN(date.getTime()) ? iso : date.toLocaleString();

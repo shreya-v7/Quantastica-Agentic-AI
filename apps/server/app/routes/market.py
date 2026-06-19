@@ -9,11 +9,13 @@ from __future__ import annotations
 import contextlib
 import json
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, Request
+from fastapi.responses import Response
 
 from app.agents.sentiment import run_sentiment
 from app.core.dependencies import current_user_id, get_container
 from app.core.envelope import success
+from app.core.http import etag_json
 from app.india.market_hours import is_market_open
 from app.infra.factory import Container
 from app.providers.marketdata.base import MarketDataProvider, validate_symbol
@@ -45,10 +47,11 @@ async def _cached(container: Container, key: str, ttl: int, producer) -> dict | 
 @router.get("/market/{symbol}/candles")
 async def candles(
     symbol: str,
+    request: Request,
     range_: str = Query(default="1mo", alias="range"),
     _: str = Depends(current_user_id),
     container: Container = Depends(get_container),
-) -> dict:
+) -> Response:
     symbol = validate_symbol(symbol)
     marketdata: MarketDataProvider = container.provider("marketdata")  # type: ignore[assignment]
     ttl = 60 if range_ in ("1d", "5d") and is_market_open() else 3600
@@ -57,7 +60,8 @@ async def candles(
         data = await marketdata.candles(symbol, range_)
         return [c.model_dump() for c in data]
 
-    return success(await _cached(container, f"candles:{symbol}:{range_}", ttl, produce))
+    data = await _cached(container, f"candles:{symbol}:{range_}", ttl, produce)
+    return etag_json(request, data)
 
 
 @router.get("/market/{symbol}/quote")

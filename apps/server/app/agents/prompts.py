@@ -39,6 +39,46 @@ def sentiment_user(symbol: str, items: list) -> str:
     return json.dumps(payload)
 
 
+CHAT_CLASSIFIER_SYSTEM = (
+    "You route an Indian personal-finance question to exactly one intent. Valid intents: "
+    "'tax' (income tax old vs new regime), 'sip' (SIP or goal corpus), 'affordability' "
+    "(can I afford a purchase or loan, EMI, FOIR), 'portfolio' (analyse my holdings, risk, "
+    "concentration), 'market' (a live price or quote), 'sentiment' (news sentiment for a "
+    "stock), 'document' (a question about an uploaded statement or document), or 'general'. "
+    "If a stock is named, return its exchange-qualified symbol (RELIANCE.NS, TCS.BO). "
+    "Return only the JSON."
+)
+
+CHAT_GROUND_SYSTEM = (
+    "You explain a financial result to an Indian user in plain language. You are given the "
+    "user's question and the exact numbers a deterministic calculator produced. Use only "
+    "those numbers, quote them, and use Indian formatting (1,50,000 and lakh/crore). End "
+    "with: 'Not investment advice, for informational purposes only.' Do not use em dashes."
+)
+
+CHAT_DOC_SYSTEM = (
+    "You answer the user's question using only the provided document excerpts. If the "
+    "excerpts do not contain the answer, say so plainly. Do not invent figures. End with: "
+    "'Not investment advice, for informational purposes only.' Do not use em dashes."
+)
+
+
+def chat_classify_user(message: str) -> str:
+    return f"Question: {message}"
+
+
+def chat_ground_user(message: str, computed: dict) -> str:
+    import json as _json
+
+    return f"Question: {message}\nCalculator result: {_json.dumps(computed)}"
+
+
+def chat_doc_user(message: str, excerpts: list[str]) -> str:
+    import json as _json
+
+    return f"Question: {message}\nExcerpts: {_json.dumps(excerpts)}"
+
+
 SUMMARIZER_SYSTEM = (
     "You are a financial analyst for an Indian user, writing a plain-language answer to "
     "their question. Base every claim on the provided findings and metrics, and cite "

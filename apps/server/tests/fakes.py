@@ -26,6 +26,8 @@ class FakeLLM(LLMClient):
             )
 
         properties = json_schema.get("properties", {})
+        if "intent" in properties:
+            return self._classify(user)
         if "steps" in properties:
             if self.invalid_plan:
                 return {"unexpected": "no steps here"}
@@ -49,3 +51,28 @@ class FakeLLM(LLMClient):
                 ]
             }
         raise AssertionError("Unexpected schema in FakeLLM")
+
+    @staticmethod
+    def _classify(user: str) -> dict[str, Any]:
+        import re
+
+        text = user.lower()
+        symbol_match = re.search(r"[A-Z][A-Z0-9&-]*\.(?:NS|BO)", user)
+        symbol = symbol_match.group(0) if symbol_match else None
+        if "tax" in text or "regime" in text:
+            intent = "tax"
+        elif "sip" in text or "goal" in text or "corpus" in text:
+            intent = "sip"
+        elif "afford" in text or "emi" in text or "loan" in text:
+            intent = "affordability"
+        elif "sentiment" in text or "news" in text:
+            intent = "sentiment"
+        elif "price" in text or "quote" in text:
+            intent = "market"
+        elif "document" in text or "statement" in text:
+            intent = "document"
+        elif "portfolio" in text or "concentrat" in text or "risk" in text:
+            intent = "portfolio"
+        else:
+            intent = "general"
+        return {"intent": intent, "symbol": symbol}

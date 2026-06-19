@@ -12,10 +12,27 @@ from app.infra.llm.base import LLMClient, build_json_instruction, parse_json_res
 
 logger = logging.getLogger("quantastica.llm")
 
+# Approximate USD per 1M tokens (input, output) for cost telemetry (Phase M). Falls back
+# to a sensible default when the configured model is not in the table.
+_PRICING: dict[str, tuple[float, float]] = {
+    "claude-3-5-haiku": (0.80, 4.0),
+    "claude-3-5-sonnet": (3.0, 15.0),
+    "claude-3-7-sonnet": (3.0, 15.0),
+}
+
+
+def _estimate_cost_usd(model: str, input_tokens: int, output_tokens: int) -> float:
+    in_rate, out_rate = next(
+        (rates for prefix, rates in _PRICING.items() if model.startswith(prefix)),
+        (3.0, 15.0),
+    )
+    return round((input_tokens * in_rate + output_tokens * out_rate) / 1_000_000, 6)
+
 
 class AnthropicClient(LLMClient):
     def __init__(self, api_key: str, model: str, max_tokens: int):
-        self._client = AsyncAnthropic(api_key=api_key)
+        # Hard 60s ceiling on the slowest outbound dependency (Phase K).
+        self._client = AsyncAnthropic(api_key=api_key, timeout=60.0)
         self._model = model
         self._max_tokens = max_tokens
 
@@ -38,10 +55,11 @@ class AnthropicClient(LLMClient):
 
         usage = response.usage
         logger.info(
-            "anthropic complete model=%s input_tokens=%s output_tokens=%s",
+            "llm.usage model=%s input_tokens=%s output_tokens=%s cost_usd=%s",
             self._model,
             usage.input_tokens,
             usage.output_tokens,
+            _estimate_cost_usd(self._model, usage.input_tokens, usage.output_tokens),
         )
 
         text = "".join(block.text for block in response.content if block.type == "text")

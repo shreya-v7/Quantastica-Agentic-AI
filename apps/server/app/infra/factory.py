@@ -66,7 +66,16 @@ class Container:
 
     @property
     def llm(self) -> LLMClient:
-        return self._require("llm")  # type: ignore[return-value]
+        inner: LLMClient = self._require("llm")  # type: ignore[assignment]
+        cache_slot = self.slots.get("cache")
+        if cache_slot is None or not cache_slot.ready or cache_slot.instance is None:
+            return inner
+        from app.infra.llm.cache import CachingLLM
+
+        if getattr(self, "_llm_cached", None) is None or self._llm_inner is not inner:
+            self._llm_inner = inner
+            self._llm_cached = CachingLLM(inner, cache_slot.instance)
+        return self._llm_cached
 
     @property
     def events(self) -> EventPublisher:
@@ -79,6 +88,16 @@ class Container:
     @property
     def cache(self) -> Redis:
         return self._require("cache")  # type: ignore[return-value]
+
+    @property
+    def session_factory(self):
+        return self.repository.session_factory  # type: ignore[attr-defined]
+
+    @property
+    def rate_limiter(self):
+        from app.core.ratelimit import RateLimiter
+
+        return RateLimiter(self.cache)
 
     def status(self) -> PlatformStatus:
         components = [

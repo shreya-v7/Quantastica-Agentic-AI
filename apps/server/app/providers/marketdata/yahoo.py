@@ -10,6 +10,7 @@ from datetime import UTC, datetime
 
 import httpx
 
+from app.core.circuit import CircuitBreaker
 from app.core.errors import ProviderUnavailableError, ValidationError
 from app.providers.marketdata.base import (
     VALID_RANGES,
@@ -27,17 +28,21 @@ _HEADERS = {"User-Agent": "Mozilla/5.0 (Quantastica)"}
 class YahooMarketData(MarketDataProvider):
     def __init__(self, timeout_seconds: float = 10.0):
         self._timeout = timeout_seconds
+        self._breaker = CircuitBreaker("marketdata")
 
-    async def _chart(self, symbol: str, range_: str, interval: str) -> dict:
-        url = f"{_BASE}/{symbol}"
-        params = {"range": range_, "interval": interval}
+    async def _fetch(self, url: str, params: dict) -> dict:
         try:
             async with httpx.AsyncClient(timeout=self._timeout, headers=_HEADERS) as client:
                 response = await client.get(url, params=params)
                 response.raise_for_status()
-                payload = response.json()
+                return response.json()
         except httpx.HTTPError as exc:
             raise ProviderUnavailableError("marketdata", str(exc)) from exc
+
+    async def _chart(self, symbol: str, range_: str, interval: str) -> dict:
+        url = f"{_BASE}/{symbol}"
+        params = {"range": range_, "interval": interval}
+        payload = await self._breaker.call(lambda: self._fetch(url, params))
 
         chart = payload.get("chart", {})
         if chart.get("error"):
@@ -60,11 +65,13 @@ class YahooMarketData(MarketDataProvider):
             if ts
             else datetime.now(UTC).isoformat()
         )
+        prev = meta.get("chartPreviousClose") or meta.get("previousClose")
         return Quote(
             symbol=symbol,
             price=float(price),
             currency=meta.get("currency", "INR"),
             timestamp=timestamp,
+            previous_close=float(prev) if prev is not None else None,
         )
 
     async def candles(self, symbol: str, range_: str) -> list[Candle]:

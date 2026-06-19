@@ -43,6 +43,14 @@ def load_transactions() -> list[Transaction]:
     return [Transaction.model_validate(r) for r in _load("transactions.json")]
 
 
+def load_catalog() -> list[dict]:
+    return _load("catalog.json")
+
+
+def load_profile() -> dict:
+    return _load("profile.json")
+
+
 def build_bundle() -> SeedBundle:
     owner_by_portfolio = {r["id"]: r["ownerId"] for r in load_portfolio_records()}
     return SeedBundle(
@@ -51,6 +59,8 @@ def build_bundle() -> SeedBundle:
         holdings=load_holdings(),
         transactions=load_transactions(),
         owner_by_portfolio=owner_by_portfolio,
+        catalog=load_catalog(),
+        profile=load_profile(),
     )
 
 

@@ -47,6 +47,25 @@ services:
     ports:
       - "8000:8000"
 
+  worker:
+    build:
+      context: ./apps/server
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      APP_ENV: dev
+      PLATFORM: local
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      DATABASE_URL: postgresql+asyncpg://quantastica:quantastica@postgres:5432/quantastica
+      REDIS_URL: redis://redis:6379/0
+      STORAGE_DIR: /data/exports
+    volumes:
+      - server-data:/data
+    command: ["python", "-m", "app.workers"]
+
   web:
     build:
       context: .

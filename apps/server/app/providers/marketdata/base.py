@@ -33,6 +33,7 @@ class Quote(BaseModel):
     price: float
     currency: str
     timestamp: str
+    previous_close: float | None = None
 
 
 class Candle(BaseModel):

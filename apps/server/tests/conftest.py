@@ -59,6 +59,7 @@ async def container(fake_llm: FakeLLM, tmp_path, pg_url: str, redis_url: str) ->
     settings = make_settings(pg_url, redis_url, storage_dir=str(tmp_path / "exports"))
     engine = build_engine(settings.database_url, settings.db_pool_size)
     async with engine.begin() as conn:
+        await conn.execute(text("CREATE EXTENSION IF NOT EXISTS vector"))
         await conn.run_sync(Base.metadata.create_all)
     repo = PostgresRepository(build_session_factory(engine))
     repo.engine = engine  # type: ignore[attr-defined]

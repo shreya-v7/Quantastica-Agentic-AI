@@ -45,3 +45,32 @@ class Platform(str, Enum):
     local = "local"
     gcp = "gcp"
     aws = "aws"
+
+
+class OrderSide(str, Enum):
+    buy = "buy"
+    sell = "sell"
+
+
+class OrderType(str, Enum):
+    market = "market"
+    limit = "limit"
+
+
+class OrderStatus(str, Enum):
+    pending_approval = "pending_approval"
+    approved = "approved"
+    submitted = "submitted"
+    filled = "filled"
+    rejected = "rejected"
+    cancelled = "cancelled"
+
+
+class TradingMode(str, Enum):
+    paper = "paper"
+    live = "live"
+
+
+class AlertOperator(str, Enum):
+    above = "above"
+    below = "below"

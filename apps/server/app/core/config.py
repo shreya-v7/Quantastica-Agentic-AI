@@ -80,6 +80,14 @@ class Settings(BaseSettings):
     access_token_ttl_seconds: int = 15 * 60
     refresh_token_ttl_seconds: int = 30 * 24 * 3600
     fresh_auth_window_seconds: int = 5 * 60
+    login_max_attempts: int = Field(default=5, ge=1)
+    login_lock_minutes: int = Field(default=15, ge=1)
+
+    # Rate limits (requests per window per identity)
+    rate_limit_default: int = Field(default=120, ge=1)
+    rate_limit_window_seconds: int = Field(default=60, ge=1)
+    rate_limit_auth: int = Field(default=10, ge=1)
+    rate_limit_money: int = Field(default=30, ge=1)
 
     # CORS (comma separated). prod refuses "*".
     cors_origins: str = "http://localhost:5173,http://127.0.0.1:5173"
@@ -137,6 +145,10 @@ class Settings(BaseSettings):
 
     # Worker
     worker_poll_seconds: float = Field(default=15.0, gt=0)
+
+    # Observability
+    sentry_dsn: str | None = None
+    sentry_traces_sample_rate: float = Field(default=0.0, ge=0.0, le=1.0)
 
     @field_validator("cors_origins")
     @classmethod

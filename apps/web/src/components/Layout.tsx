@@ -1,13 +1,37 @@
 import { NavLink, Outlet } from "react-router-dom";
-import { Activity, LayoutDashboard, Lightbulb, Server, Wallet } from "lucide-react";
+import {
+  Activity,
+  Bell,
+  Bot,
+  CandlestickChart,
+  LayoutDashboard,
+  Lightbulb,
+  LogIn,
+  MessageSquare,
+  Server,
+  ShieldCheck,
+  Target,
+  TrendingUp,
+  UserCircle,
+  Wallet,
+} from "lucide-react";
 import type { ComponentType } from "react";
 
 const NAV: { to: string; label: string; icon: ComponentType<{ className?: string }> }[] = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard },
+  { to: "/chat", label: "Ask", icon: MessageSquare },
+  { to: "/markets", label: "Markets", icon: CandlestickChart },
+  { to: "/profile", label: "Profile", icon: UserCircle },
   { to: "/portfolios", label: "Portfolios", icon: Wallet },
   { to: "/agents", label: "Agents", icon: Activity },
   { to: "/insights", label: "Insights", icon: Lightbulb },
+  { to: "/planning", label: "Planning", icon: Target },
+  { to: "/match", label: "Match", icon: ShieldCheck },
+  { to: "/trades", label: "Trades", icon: TrendingUp },
+  { to: "/automation", label: "Automation", icon: Bot },
+  { to: "/alerts", label: "Alerts", icon: Bell },
   { to: "/platform", label: "Platform", icon: Server },
+  { to: "/signin", label: "Sign in", icon: LogIn },
 ];
 
 export function Layout() {

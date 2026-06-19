@@ -68,9 +68,13 @@ class SeedBundle:
         holdings: list[Holding],
         transactions: list[Transaction],
         owner_by_portfolio: dict[str, str],
+        catalog: list[dict] | None = None,
+        profile: dict | None = None,
     ):
         self.users = users
         self.portfolios = portfolios
         self.holdings = holdings
         self.transactions = transactions
         self.owner_by_portfolio = owner_by_portfolio
+        self.catalog = catalog or []
+        self.profile = profile or {}

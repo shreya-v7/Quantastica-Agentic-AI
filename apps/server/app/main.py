@@ -18,8 +18,29 @@ from app.core.envelope import failure, success
 from app.core.errors import AppError, RateLimitedError
 from app.core.logging import configure_logging
 from app.core.middleware import AuthMiddleware, RequestIdMiddleware
+from app.core.observability import init_sentry
 from app.infra.factory import build_container
-from app.routes import agents, calc, dev, health, insights, market, platform, portfolios, seed
+from app.routes import (
+    admin,
+    agents,
+    alerts,
+    auth,
+    automation,
+    calc,
+    chat,
+    dev,
+    documents,
+    health,
+    insights,
+    market,
+    match,
+    platform,
+    portfolios,
+    profile,
+    seed,
+    trades,
+    whatsapp,
+)
 
 logger = logging.getLogger("quantastica.app")
 
@@ -27,6 +48,7 @@ logger = logging.getLogger("quantastica.app")
 def create_app(settings: Settings | None = None) -> FastAPI:
     settings = settings or get_settings()
     configure_logging(settings.app_env, settings.log_level)
+    init_sentry(settings)
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
@@ -56,11 +78,21 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     for router in (
         health.router,
         platform.router,
+        auth.router,
+        profile.router,
         portfolios.router,
         insights.router,
         agents.router,
         market.router,
         calc.router,
+        match.router,
+        trades.router,
+        automation.router,
+        alerts.router,
+        chat.router,
+        documents.router,
+        whatsapp.router,
+        admin.router,
         seed.router,
     ):
         app.include_router(router, prefix="/api")

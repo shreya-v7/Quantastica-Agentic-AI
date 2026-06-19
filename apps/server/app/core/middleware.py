@@ -13,8 +13,18 @@ from app.core.context import request_id_var
 from app.core.envelope import failure
 from app.core.errors import AuthRequiredError
 from app.core.security import verify_token
+from app.infra.llm.cache import cache_bypass
 
-PUBLIC_PATHS = ("/api/health", "/api/platform", "/dev/session")
+PUBLIC_PATHS = (
+    "/api/health",
+    "/api/ready",
+    "/api/platform",
+    "/api/auth/register",
+    "/api/auth/login",
+    "/api/auth/refresh",
+    "/api/whatsapp/webhook",
+    "/dev/session",
+)
 
 
 class RequestIdMiddleware(BaseHTTPMiddleware):
@@ -35,6 +45,13 @@ class AuthMiddleware(BaseHTTPMiddleware):
         self.settings = settings
 
     async def dispatch(self, request: Request, call_next) -> Response:
+        # Dev-only LLM cache bypass; ignored in prod so the cache can never be skipped.
+        bypass = (
+            self.settings.app_env != "prod"
+            and request.headers.get("X-LLM-Cache-Bypass") == "1"
+        )
+        cache_bypass.set(bypass)
+
         if request.method == "OPTIONS":
             return await call_next(request)
         if not self.settings.auth_enabled or not self._protected(request.url.path):

@@ -7,6 +7,7 @@ import logging
 import sys
 
 from app.core.context import get_request_id
+from app.core.redaction import redact
 
 
 class RequestIdFilter(logging.Filter):
@@ -20,12 +21,19 @@ class JsonFormatter(logging.Formatter):
         payload = {
             "level": record.levelname,
             "logger": record.name,
-            "message": record.getMessage(),
+            "message": redact(record.getMessage()),
             "requestId": getattr(record, "request_id", "-"),
         }
         if record.exc_info:
-            payload["error"] = self.formatException(record.exc_info)
+            payload["error"] = redact(self.formatException(record.exc_info))
         return json.dumps(payload)
+
+
+class RedactingFormatter(logging.Formatter):
+    """Plain-text formatter that masks secrets in the rendered message (dev console)."""
+
+    def format(self, record: logging.LogRecord) -> str:
+        return redact(super().format(record))
 
 
 def configure_logging(app_env: str, log_level: str) -> None:
@@ -36,7 +44,7 @@ def configure_logging(app_env: str, log_level: str) -> None:
         handler.setFormatter(JsonFormatter())
     else:
         handler.setFormatter(
-            logging.Formatter("%(levelname)s [%(request_id)s] %(name)s: %(message)s")
+            RedactingFormatter("%(levelname)s [%(request_id)s] %(name)s: %(message)s")
         )
 
     root = logging.getLogger()
