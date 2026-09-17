@@ -73,9 +73,10 @@ async def inbound(
 
 async def _handle_command(container: Container, auth: AuthRepository, user, text: str) -> str:
     user_id = user.id
+    settings = container.settings
     parts = text.split()
     command = parts[0].upper() if parts else ""
-    is_trading = command in ("CONFIRM", "YES", "CANCEL", "NO")
+    is_trading = command in ("CONFIRM", "YES", "CANCEL", "NO", "BUY", "SELL")
     # A WhatsApp number must be OTP-verified before it can move money.
     if is_trading and not user.phone_verified:
         await auth.audit(user_id, "whatsapp.unverified_command", {"command": command})
@@ -95,7 +96,47 @@ async def _handle_command(container: Container, auth: AuthRepository, user, text
     if command in ("CANCEL", "NO") and len(parts) >= 2:
         await TradeService(container).cancel_intent(user_id, parts[1])
         return f"Cancelled {parts[1]}."
+    lower = text.lower()
+    if "queue" in lower or "exception" in lower:
+        from app.infra.repo.book_repo import BookRepository
+        from app.services.desk_service import DeskService
+        from app.speech.provider import queue_script
+
+        queue = await DeskService(BookRepository(container.session_factory)).queue("hh_mehta")
+        return queue_script(queue["exceptions"])
+    if command in ("BUY", "SELL") or "buy " in lower or "sell " in lower:
+        if not settings.trading_chat_enabled:
+            return "Conversational trading is off. Paper intents stay behind TRADING_CHAT_ENABLED."
+        from app.schemas.common import OrderSide, OrderType
+        from app.schemas.trade import CreateOrderIntent
+        from app.trading.intents import estimate_charges, parse_order_text, pretrade_notes
+
+        draft = parse_order_text(text)
+        if draft.needs_clarification:
+            return draft.clarification or "Clarify the order."
+        portfolios = await container.repository.list_portfolios(user_id)
+        if not portfolios:
+            return "No portfolio on this account. Seed the desk first."
+        intent = await TradeService(container).create_intent(
+            user_id,
+            CreateOrderIntent(
+                portfolio_id=portfolios[0].id,
+                symbol=draft.symbol,
+                side=OrderSide(draft.side),
+                quantity=draft.quantity,
+                order_type=OrderType.market,
+            ),
+            source="whatsapp",
+        )
+        notes = pretrade_notes(draft.symbol, draft.side, None)
+        charges = estimate_charges(intent.notional_inr, draft.side)
+        return (
+            f"PAPER {draft.side} {draft.quantity} {draft.symbol}. "
+            f"Est. value Rs {intent.notional_inr:,.0f}. Charges Rs {charges['totalInr']:,.0f}. "
+            f"{' '.join(notes)} "
+            f"Reply CONFIRM {intent.id} within 10 minutes. No order without confirmation."
+        )
     return (
         "Commands: 'CONFIRM <intentId>' to execute a pending order, "
-        "'CANCEL <intentId>' to cancel it."
+        "'CANCEL <intentId>' to cancel it, or 'queue' for the Mehta digest."
     )

@@ -2,7 +2,7 @@ import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import type { AllocationSlice } from "@quantastica/types";
 import { formatPercent } from "../lib/format";
 
-const COLORS = ["#4f46e5", "#06b6d4", "#f59e0b", "#10b981", "#ef4444", "#8b5cf6", "#ec4899"];
+const COLORS = ["#1c3ebc", "#2f63e8", "#6d8ef0", "#142c8c", "#4a6ad4", "#93aaf5", "#c5ced8"];
 
 export function AllocationChart({ data }: { data: AllocationSlice[] }) {
   return (

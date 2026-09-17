@@ -10,10 +10,27 @@ def _settings(**overrides) -> Settings:
 
 
 def test_dev_local_defaults_ok():
-    settings = _settings(app_env="dev", platform="local")
+    settings = _settings(app_env="dev", platform="local", anthropic_api_key="key")
     assert settings.platform.value == "local"
     assert settings.docs_enabled is True
     assert settings.seed_enabled is True
+    assert settings.trading_chat_enabled is False
+    assert settings.voice_enabled is True
+
+
+def test_dev_local_gemini_key_is_enough():
+    settings = _settings(
+        app_env="dev", platform="local", gemini_api_key="gk", anthropic_api_key=None
+    )
+    assert settings.missing_env_for("llm") == []
+    assert settings.local_llm_implementation() == "gemini"
+
+
+def test_dev_local_missing_both_llm_keys(monkeypatch):
+    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+    monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+    settings = _settings(app_env="dev", platform="local", anthropic_api_key="", gemini_api_key="")
+    assert settings.missing_env_for("llm") == ["ANTHROPIC_API_KEY or GEMINI_API_KEY"]
 
 
 def test_prod_refuses_wildcard_cors():

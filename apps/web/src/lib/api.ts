@@ -53,6 +53,80 @@ export function getAccessToken(): string | null {
   return store ? store.getItem(TOKEN_KEY) : null;
 }
 
+export type DeskException = {
+  id: string;
+  householdId: string;
+  ruleId: string;
+  title: string;
+  rupeeDelta: number;
+  dueDate: string | null;
+  severity: string;
+  metricIds: string[];
+  fingerprint: string;
+  traceId: string;
+  calculator: string;
+  calculatorVersion: string;
+  inputs: Record<string, unknown>;
+  outputs: Record<string, unknown>;
+  computedAt: string;
+};
+
+export type DeskQueue = {
+  household: { id: string; name: string; asOf: string; totalMarket: number };
+  exceptions: DeskException[];
+  lots: {
+    id: string;
+    symbol: string;
+    name: string;
+    quantity: number;
+    price: number;
+    marketValue: number;
+    sector: string;
+    acquiredOn: string;
+  }[];
+};
+
+export type FeatureFlags = {
+  tradingChat: boolean;
+  tradingMode: string;
+  voice: boolean;
+  demoMode: boolean;
+  roles: string[];
+};
+
+export type IngestResult = {
+  status: "applied" | "needs_review" | string;
+  threadId?: string;
+  missingFields?: string[];
+  extracted?: Record<string, unknown>;
+  confidence?: number;
+  queue?: DeskQueue;
+};
+
+export type SpeechResult = {
+  transcript: string;
+  intent: string;
+  answer?: string;
+  audio?: string;
+  status?: string;
+  threadId?: string;
+  missingFields?: string[];
+  extracted?: Record<string, unknown>;
+  exceptions?: DeskException[];
+  order?: Record<string, unknown>;
+};
+
+export type DeskMetrics = {
+  households: number;
+  lots: number;
+  documentsIngested: number;
+  exceptionsOpen: number;
+  rupeeDeltaSurfaced: number;
+  reviewRate: number;
+  extractionAccuracy: number | null;
+  medianUploadToExceptionSeconds: number | null;
+};
+
 export class ApiClientError extends Error {
   code: ErrorCode | "NETWORK_ERROR";
 
@@ -75,8 +149,23 @@ export async function request<T>(path: string, init?: RequestInit): Promise<T> {
         ...(init?.headers ?? {}),
       },
     });
-    body = (await res.json()) as ApiEnvelope<T>;
+    const raw = await res.text();
+    if (!raw) {
+      throw new ApiClientError(
+        "NETWORK_ERROR",
+        "The API did not respond. Start the server with make dev.",
+      );
+    }
+    try {
+      body = JSON.parse(raw) as ApiEnvelope<T>;
+    } catch {
+      throw new ApiClientError(
+        "NETWORK_ERROR",
+        `The API returned a non-JSON response (${res.status}).`,
+      );
+    }
   } catch (cause) {
+    if (cause instanceof ApiClientError) throw cause;
     throw new ApiClientError("NETWORK_ERROR", (cause as Error).message);
   }
 
@@ -111,6 +200,52 @@ export const api = {
     request<ExportResult>(`/agents/runs/${id}/export`, { method: "POST" }),
   loadSeed: () => request<Record<string, number>>("/seed/load", { method: "POST" }),
 
+  // Desk
+  listHouseholds: () => request<{ id: string; name: string; asOf: string }[]>("/desk/households"),
+  deskQueue: (householdId: string) => request<DeskQueue>(`/desk/households/${householdId}/queue`),
+  setLotQuantity: (householdId: string, lotId: string, quantity: number) =>
+    post<DeskQueue>(`/desk/households/${householdId}/lots/${lotId}`, { quantity }),
+  ingestBook: (payload: {
+    household_id: string;
+    kind: string;
+    raw_text?: string;
+    image_b64?: string;
+    vlm_override?: Record<string, unknown>;
+  }) => post<IngestResult>("/ingest", payload),
+  resumeIngest: (threadId: string, patch: Record<string, unknown>) =>
+    post<IngestResult>("/ingest/resume", { thread_id: threadId, patch }),
+  transcribe: (householdId: string, audioB64: string) =>
+    post<SpeechResult>("/speech/transcribe", {
+      household_id: householdId,
+      audio_b64: audioB64,
+    }),
+  flags: () => request<FeatureFlags>("/flags"),
+  deskMetrics: () => request<DeskMetrics>("/metrics/desk"),
+  controlDashboards: () =>
+    request<{
+      exec: Record<string, unknown>;
+      product: Record<string, unknown>;
+      aiQuality: Record<string, number | Record<string, number>>;
+      sre: Record<string, unknown>;
+      finops: Record<string, unknown>;
+      security: Record<string, unknown>;
+      fde: { score: number; rupeesSurfaced: number; layoutCoverage: number };
+      olap: { engine: string; events: number; households: number };
+    }>("/control/dashboards"),
+  controlTrust: () =>
+    request<{
+      residency: string;
+      cmek: boolean;
+      rls: string;
+      dsr: string[];
+      breachWindowHours: number;
+      advice: string;
+      trading: string;
+    }>("/control/trust"),
+  controlEvals: () => request<{ gates: { goldenRupee: boolean }; metrics: Record<string, number> }>("/control/evals"),
+  runDemo: () => post<Record<string, unknown>>("/demo/run", {}),
+  parseTrade: (text: string) => post<Record<string, unknown>>("/trades/parse", { text }),
+
   // Auth
   register: (email: string, password: string) =>
     post<{ id: string; email: string }>("/auth/register", { email, password }),
@@ -135,6 +270,10 @@ export const api = {
   // Chat
   chat: (message: string, portfolioId?: string, params?: Record<string, unknown>) =>
     post<ChatResponse>("/chat", { message, portfolioId, params: params ?? {} }),
+  listDocuments: () =>
+    request<{ id: string; title: string; contentType: string; createdAt: string }[]>("/documents"),
+  ingestDocument: (title: string, text: string) =>
+    post<{ documentId: string | null; chunks: number }>("/documents", { title, text }),
 
   // Trades
   listIntents: () => request<OrderIntent[]>("/trades/intents"),

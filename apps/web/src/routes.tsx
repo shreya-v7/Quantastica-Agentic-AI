@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import { Layout } from "./components/Layout";
 import { DashboardPage } from "./pages/DashboardPage";
 import { PortfoliosPage } from "./pages/PortfoliosPage";
@@ -15,14 +15,19 @@ import { AutomationPage } from "./pages/AutomationPage";
 import { AlertsPage } from "./pages/AlertsPage";
 import { ProfilePage } from "./pages/ProfilePage";
 import { SignInPage } from "./pages/SignInPage";
+import { LandingPage } from "./pages/LandingPage";
+import { DemoPage } from "./pages/DemoPage";
+import { MetricsPage } from "./pages/MetricsPage";
 
 export const router = createBrowserRouter([
+  { path: "/", element: <LandingPage /> },
+  { path: "/signin", element: <SignInPage /> },
   {
-    path: "/",
     element: <Layout />,
     children: [
-      { index: true, element: <DashboardPage /> },
-      { path: "chat", element: <ChatPage /> },
+      { path: "desk", element: <DashboardPage /> },
+      { path: "ask", element: <ChatPage /> },
+      { path: "chat", element: <Navigate to="/ask" replace /> },
       { path: "markets", element: <MarketsPage /> },
       { path: "profile", element: <ProfilePage /> },
       { path: "portfolios", element: <PortfoliosPage /> },
@@ -34,8 +39,10 @@ export const router = createBrowserRouter([
       { path: "trades", element: <TradesPage /> },
       { path: "automation", element: <AutomationPage /> },
       { path: "alerts", element: <AlertsPage /> },
-      { path: "platform", element: <PlatformPage /> },
-      { path: "signin", element: <SignInPage /> },
+      { path: "operators", element: <PlatformPage /> },
+      { path: "metrics", element: <MetricsPage /> },
+      { path: "demo", element: <DemoPage /> },
+      { path: "platform", element: <Navigate to="/operators" replace /> },
     ],
   },
 ]);

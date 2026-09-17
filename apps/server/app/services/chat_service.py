@@ -51,10 +51,31 @@ class ChatService:
         return await handler(user_id, message, portfolio_id, params, classification)
 
     async def _ground(self, message: str, computed: dict) -> str:
+        from quantastica_kernel.guard import fail_closed, parse_amounts
+
         result = await self._c.llm.complete(
             prompts.CHAT_GROUND_SYSTEM, prompts.chat_ground_user(message, computed)
         )
-        return result if isinstance(result, str) else DISCLAIMER
+        text = result if isinstance(result, str) else DISCLAIMER
+        allowed: list[float] = parse_amounts(str(computed))
+
+        def walk(value: object) -> None:
+            if isinstance(value, bool):
+                return
+            if isinstance(value, int | float):
+                allowed.append(float(value))
+            elif isinstance(value, dict):
+                for item in value.values():
+                    walk(item)
+            elif isinstance(value, list):
+                for item in value:
+                    walk(item)
+
+        walk(computed)
+        guarded = fail_closed(text, allowed)
+        if DISCLAIMER not in guarded:
+            return f"{guarded} {DISCLAIMER}"
+        return guarded
 
     async def _tax(self, user_id, message, portfolio_id, params, c) -> ChatResponse:
         from app.services.profile_service import ProfileService

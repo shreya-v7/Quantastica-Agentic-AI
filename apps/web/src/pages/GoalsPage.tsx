@@ -23,7 +23,7 @@ export function GoalsPage() {
             key={t}
             onClick={() => setTab(t)}
             className={`rounded-lg px-4 py-2 text-sm font-medium ${
-              tab === t ? "bg-brand-600 text-white" : "border border-ink-200 text-ink-600"
+              tab === t ? "bg-brand-600 text-[rgb(var(--on-accent))]" : "border border-ink-200 text-ink-600"
             }`}
           >
             {t}
@@ -83,7 +83,7 @@ function TaxPanel() {
               />
             </label>
           ))}
-          <button className="w-full rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white">
+          <button className="w-full rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-[rgb(var(--on-accent))]">
             Compare regimes
           </button>
         </form>
@@ -135,7 +135,7 @@ function SipPanel() {
           <Field name="years" label="Years" def={15} />
           <Field name="annualReturn" label="Expected return (%)" def={12} />
           <Field name="annualStepUp" label="Annual step-up (%)" def={10} />
-          <button className="w-full rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white">
+          <button className="w-full rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-[rgb(var(--on-accent))]">
             Compute SIP
           </button>
         </form>
@@ -182,7 +182,7 @@ function ProjectionPanel() {
           <Field name="years" label="Years" def={10} />
           <Field name="annualReturn" label="Expected return (%)" def={12} />
           <Field name="annualVolatility" label="Volatility (%)" def={18} />
-          <button className="w-full rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white">
+          <button className="w-full rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-[rgb(var(--on-accent))]">
             Run Monte Carlo
           </button>
         </form>

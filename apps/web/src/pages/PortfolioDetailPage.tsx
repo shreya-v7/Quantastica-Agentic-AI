@@ -20,7 +20,7 @@ export function PortfolioDetailPage() {
     <div>
       <PageHeader title={portfolio.name} subtitle={`${holdings.length} holdings · ${currency}`} />
       <div className="mb-6 flex">
-        <Link to="/portfolios" className="text-sm text-brand-600">
+        <Link to="/portfolios" className="text-sm text-pine-500">
           Back to portfolios
         </Link>
       </div>

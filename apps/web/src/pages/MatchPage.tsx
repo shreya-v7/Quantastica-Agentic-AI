@@ -18,7 +18,7 @@ export function MatchPage() {
         <button
           onClick={() => setKind("loan")}
           className={`rounded-lg px-4 py-2 text-sm font-medium ${
-            kind === "loan" ? "bg-brand-600 text-white" : "border border-ink-200 text-ink-600"
+            kind === "loan" ? "bg-brand-600 text-[rgb(var(--on-accent))]" : "border border-ink-200 text-ink-600"
           }`}
         >
           Loans
@@ -26,7 +26,7 @@ export function MatchPage() {
         <button
           onClick={() => setKind("insurance")}
           className={`rounded-lg px-4 py-2 text-sm font-medium ${
-            kind === "insurance" ? "bg-brand-600 text-white" : "border border-ink-200 text-ink-600"
+            kind === "insurance" ? "bg-brand-600 text-[rgb(var(--on-accent))]" : "border border-ink-200 text-ink-600"
           }`}
         >
           Insurance
@@ -76,7 +76,7 @@ function LoanPanel() {
           <NumField name="monthlyIncomeInr" label="Monthly income" def={200000} />
           <NumField name="existingEmiInr" label="Existing EMI" def={0} />
           <NumField name="propertyValueInr" label="Property value (home only)" def={7000000} />
-          <button className="w-full rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white">
+          <button className="w-full rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-[rgb(var(--on-accent))]">
             Find loans
           </button>
         </form>
@@ -147,7 +147,7 @@ function InsurancePanel() {
           <label className="flex items-center gap-2 text-sm text-ink-600">
             <input type="checkbox" name="familyFloater" /> Family floater (health)
           </label>
-          <button className="w-full rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white">
+          <button className="w-full rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-[rgb(var(--on-accent))]">
             Find cover
           </button>
         </form>

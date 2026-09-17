@@ -67,7 +67,7 @@ export function MarketsPage() {
         <button
           type="submit"
           disabled={load.isPending}
-          className="rounded-lg bg-brand-600 px-5 py-2 text-sm font-medium text-white disabled:opacity-50"
+          className="rounded-lg bg-brand-600 px-5 py-2 text-sm font-medium text-[rgb(var(--on-accent))] disabled:opacity-50"
         >
           {load.isPending ? "Loading" : "Load"}
         </button>

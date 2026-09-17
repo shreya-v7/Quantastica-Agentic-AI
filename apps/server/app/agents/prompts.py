@@ -15,9 +15,10 @@ PLANNER_SYSTEM = (
 
 INSIGHT_SYSTEM = (
     "You are a financial risk analyst. You are given computed portfolio metrics and risk "
-    "metrics. Produce concise, specific findings. Every finding must reference the metric "
-    "ids that support it. Do not invent numbers that are not in the inputs. Severity is one "
-    "of info, low, medium, high. Confidence is a number between 0 and 1."
+    "metrics, and optional document passages. Produce concise, specific findings. Every "
+    "finding must reference the metric ids that support it. Do not invent numbers that are "
+    "not in the inputs. Severity is one of info, low, medium, high. Confidence is a number "
+    "between 0 and 1."
 )
 
 SENTIMENT_SYSTEM = (
@@ -97,20 +98,41 @@ def planner_user(query: str, portfolio: Portfolio, metrics_preview: dict) -> str
 
 
 def insight_user(
-    query: str, metrics: PortfolioMetrics, risk_metrics: list[RiskMetric]
+    query: str,
+    metrics: PortfolioMetrics,
+    risk_metrics: list[RiskMetric],
+    retrieved: list | None = None,
 ) -> str:
     payload = {
         "query": query,
         "metrics": metrics.model_dump(by_alias=True),
         "riskMetrics": [m.model_dump(by_alias=True) for m in risk_metrics],
+        "retrieved": _retrieved_payload(retrieved),
     }
     return json.dumps(payload)
 
 
-def summarizer_user(query: str, findings: list[dict], risk_metrics: list[RiskMetric]) -> str:
+def summarizer_user(
+    query: str,
+    findings: list[dict],
+    risk_metrics: list[RiskMetric],
+    retrieved: list | None = None,
+) -> str:
     payload = {
         "query": query,
         "findings": findings,
         "riskMetrics": [m.model_dump(by_alias=True) for m in risk_metrics],
+        "retrieved": _retrieved_payload(retrieved),
     }
     return json.dumps(payload)
+
+
+def _retrieved_payload(retrieved: list | None) -> list[dict]:
+    if not retrieved:
+        return []
+    passages = []
+    for item in retrieved:
+        document_id = getattr(item, "document_id", None) or item.get("documentId")
+        content = getattr(item, "content", None) or item.get("content")
+        passages.append({"documentId": document_id, "content": content})
+    return passages

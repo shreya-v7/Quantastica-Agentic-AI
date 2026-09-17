@@ -24,6 +24,7 @@ _PATTERNS: list[tuple[re.Pattern[str], str]] = [
     (re.compile(r"\b[6-9]\d{9}\b"), "[REDACTED_PHONE]"),
     # Account-number-like digit runs (11+ digits).
     (re.compile(r"\b\d{11,}\b"), "[REDACTED_ACCT]"),
+    (re.compile(r"\b[A-Z]{5}[0-9]{4}[A-Z]\b"), "[REDACTED_PAN]"),
 ]
 
 

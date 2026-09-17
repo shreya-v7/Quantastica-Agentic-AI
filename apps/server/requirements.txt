@@ -18,4 +18,8 @@ pyotp==2.9.0
 tenacity==9.0.0
 sentry-sdk==2.19.2
 boto3==1.35.92
+langgraph==0.4.8
+llama-index-core==0.12.41
+google-genai==1.14.0
+mcp==1.9.4
 

@@ -45,7 +45,32 @@ alert policy in `infra/terraform/alerts.tf`.
 - WhatsApp trade commands are rejected unless the number is OTP-verified.
 - Nothing on the money path or auth path is cached.
 
-## Common operations
+## Outbox, DLQ, disaster recovery
+
+Local recompute is `book_event -> outbox -> in-process drain`. Production target is
+EventBridge + SQS with a DLQ. If the consumer crashes, the outbox row stays `pending`
+and the next drain retries. `processed_events` makes recompute idempotent.
+
+DLQ alarm: messages older than 5 minutes on `recompute-dlq`. First response: inspect
+payload household_id, replay from outbox, do not rewrite exceptions by hand.
+
+DR region: Hyderabad `ap-south-2` as a warm Postgres replica plan. Failover is a runbook
+item for the bank's landing zone, not a dual-active control plane. Restore drill:
+`alembic upgrade head` on a snapshot, `make seed-small`, confirm Mehta queue rupees
+match `tools/synthgen/out/small.json`.
+
+RLS: enable only with `SET app.firm_id` on every session. Local and pytest leave RLS
+off so seed can load two households.
+
+## Feature flags
+
+- `TRADING_CHAT_ENABLED` (default false)
+- `TRADING_MODE=paper|live`
+- `VOICE_ENABLED`
+- `DEMO_MODE`
+
+Inspect live values on `GET /api/flags` and the Operators page.
+
 
 - Reseed demo data (dev only): `POST /api/seed/reset`.
 - Rotate JWT secret: update Secret Manager, then roll the server revision. Existing refresh

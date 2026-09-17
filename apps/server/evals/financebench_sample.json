@@ -1,0 +1,36 @@
+{
+  "name": "financebench-sample",
+  "source": "PatronusAI/financebench style open-book QA. Tiny fixture for CI, not the full 150.",
+  "documents": [
+    {
+      "id": "aapl-fy2023",
+      "title": "Apple FY2023 excerpt",
+      "text": "Apple Inc. total net sales were $383.3 billion for fiscal 2023, compared with $394.3 billion for fiscal 2022. iPhone net sales were $200.6 billion. Services net sales were $85.2 billion. The company reported diluted earnings per share of $6.13."
+    },
+    {
+      "id": "msft-fy2023",
+      "title": "Microsoft FY2023 excerpt",
+      "text": "Microsoft Corporation revenue was $211.9 billion in fiscal year 2023. Operating income was $88.5 billion. Intelligent Cloud revenue was $87.9 billion. The company returned $18.1 billion to shareholders in dividends."
+    }
+  ],
+  "questions": [
+    {
+      "id": "fb-aapl-revenue",
+      "question": "What were Apple total net sales in fiscal 2023?",
+      "evidenceMustContain": "383.3",
+      "documentId": "aapl-fy2023"
+    },
+    {
+      "id": "fb-msft-cloud",
+      "question": "What was Microsoft Intelligent Cloud revenue in fiscal 2023?",
+      "evidenceMustContain": "87.9",
+      "documentId": "msft-fy2023"
+    },
+    {
+      "id": "fb-aapl-eps",
+      "question": "What was Apple diluted earnings per share in fiscal 2023?",
+      "evidenceMustContain": "6.13",
+      "documentId": "aapl-fy2023"
+    }
+  ]
+}

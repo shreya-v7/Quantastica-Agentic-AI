@@ -1,6 +1,6 @@
 """LLM client interface.
 
-Three real implementations: Anthropic API (local), Vertex AI (gcp), Bedrock (aws).
+Implementations: Anthropic or Gemini (local), Vertex AI (gcp), Bedrock (aws).
 `complete` returns a str for prose and a parsed dict when a json_schema is supplied.
 """
 

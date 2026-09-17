@@ -42,7 +42,7 @@ export function AlertsPage() {
             <option value="above">Above</option>
           </select>
           <input name="threshold" type="number" step="any" placeholder="Price" className="rounded-lg border border-ink-200 px-3 py-2 text-sm" />
-          <button className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white">
+          <button className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-[rgb(var(--on-accent))]">
             Add alert
           </button>
         </form>

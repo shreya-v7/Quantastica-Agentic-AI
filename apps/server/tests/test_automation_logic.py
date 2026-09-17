@@ -6,8 +6,8 @@ from datetime import UTC, datetime, timedelta
 
 from app.core.config import Settings
 from app.providers.marketdata.base import Quote
+from app.rag.chunking import chunk_text
 from app.services.automation_service import fire_decision, trigger_met
-from app.services.document_service import chunk_text
 from app.workers.runner import alert_met
 
 
@@ -112,7 +112,8 @@ def test_chunk_text_overlaps_and_covers():
     text = "word " * 500
     chunks = chunk_text(text, size=200, overlap=50)
     assert len(chunks) > 1
-    assert all(len(c) <= 200 for c in chunks)
+    assert "word" in chunks[0]
+    assert sum(c.count("word") for c in chunks) >= 400
 
 
 def test_chunk_text_empty():

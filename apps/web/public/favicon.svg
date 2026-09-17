@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <rect width="32" height="32" fill="#070b14"/>
+  <path
+    d="M22.8 19.8A9.4 9.4 0 1 0 19.8 22.8"
+    fill="none"
+    stroke="#2f63e8"
+    stroke-width="2.3"
+    stroke-linecap="square"
+  />
+  <path
+    d="M9.2 19.4h10.8L28.2 28"
+    fill="none"
+    stroke="#1c3ebc"
+    stroke-width="1.8"
+    stroke-linecap="square"
+    stroke-linejoin="miter"
+  />
+  <path d="M11.2 19.4v-3.1" stroke="#2f63e8" stroke-width="1.7" stroke-linecap="square"/>
+  <path d="M14.3 19.4v-5.3" stroke="#2f63e8" stroke-width="1.7" stroke-linecap="square"/>
+  <path d="M17.4 19.4v-7.5" stroke="#1c3ebc" stroke-width="1.7" stroke-linecap="square"/>
+</svg>

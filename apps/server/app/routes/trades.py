@@ -13,9 +13,11 @@ from app.core.dependencies import (
     require_fresh_auth,
 )
 from app.core.envelope import success
+from app.core.errors import ForbiddenError
 from app.infra.factory import Container
 from app.schemas.trade import CreateOrderIntent
 from app.services.trade_service import TradeService
+from app.trading.intents import estimate_charges, parse_order_text, pretrade_notes
 
 router = APIRouter(prefix="/trades")
 
@@ -73,6 +75,34 @@ async def cancel_intent(
 
 class KillSwitch(BaseModel):
     disabled: bool
+
+
+class ParseOrderBody(BaseModel):
+    text: str
+    half_qty: float | None = None
+    lot_clock_extra: float | None = None
+    notional_inr: float | None = None
+
+
+@router.post("/parse")
+async def parse_order(
+    body: ParseOrderBody,
+    container: Container = Depends(get_container),
+) -> dict:
+    if not container.settings.trading_chat_enabled:
+        raise ForbiddenError("Conversational trading is off (TRADING_CHAT_ENABLED).")
+    draft = parse_order_text(body.text, body.half_qty)
+    notes = pretrade_notes(draft.symbol, draft.side, body.lot_clock_extra)
+    charges = estimate_charges(body.notional_inr or 0, draft.side)
+    return success(
+        {
+            "draft": draft.model_dump(by_alias=True),
+            "notes": notes,
+            "charges": charges,
+            "expiresSeconds": 600,
+            "requiresConfirm": True,
+        }
+    )
 
 
 @router.post("/kill-switch")

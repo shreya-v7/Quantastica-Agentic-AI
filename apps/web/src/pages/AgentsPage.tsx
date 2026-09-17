@@ -28,7 +28,10 @@ export function AgentsPage() {
 
   return (
     <div>
-      <PageHeader title="Agents" subtitle="Run the analysis pipeline and watch the live trace." />
+      <PageHeader
+        title="Analysis run"
+        subtitle="LangGraph pipeline with a persisted trace. Researcher and Risk are code. Insight and Summarizer are LLM, grounded in those numbers."
+      />
 
       <Card className="mb-6">
         <form onSubmit={submit} className="space-y-4">
@@ -58,7 +61,7 @@ export function AgentsPage() {
           <button
             type="submit"
             disabled={runAgents.isPending || !activePortfolio || !query.trim()}
-            className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-50"
+            className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-[rgb(var(--on-accent))] hover:bg-brand-700 disabled:opacity-50"
           >
             {runAgents.isPending ? "Running..." : "Run analysis"}
           </button>

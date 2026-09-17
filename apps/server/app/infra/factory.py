@@ -67,14 +67,17 @@ class Container:
     @property
     def llm(self) -> LLMClient:
         inner: LLMClient = self._require("llm")  # type: ignore[assignment]
+        from app.infra.llm.masking import MaskingLLM
+
+        masked: LLMClient = MaskingLLM(inner)
         cache_slot = self.slots.get("cache")
         if cache_slot is None or not cache_slot.ready or cache_slot.instance is None:
-            return inner
+            return masked
         from app.infra.llm.cache import CachingLLM
 
         if getattr(self, "_llm_cached", None) is None or self._llm_inner is not inner:
             self._llm_inner = inner
-            self._llm_cached = CachingLLM(inner, cache_slot.instance)
+            self._llm_cached = CachingLLM(masked, cache_slot.instance)
         return self._llm_cached
 
     @property
@@ -207,6 +210,14 @@ def _build_llm(settings: Settings) -> LLMClient:
             model_id=settings.bedrock_model_id or "",
             max_tokens=settings.llm_max_tokens,
         )
+    if settings.local_llm_implementation() == "gemini":
+        from app.infra.llm.gemini import GeminiClient
+
+        return GeminiClient(
+            api_key=settings.gemini_api_key or "",
+            model=settings.gemini_model,
+            max_tokens=settings.llm_max_tokens,
+        )
     from app.infra.llm.anthropic import AnthropicClient
 
     return AnthropicClient(
@@ -250,6 +261,7 @@ def _register_providers(container: Container) -> None:
         "whatsapp": _build_whatsapp,
         "embeddings": _build_embeddings,
         "aa": _build_aa,
+        "bank": _build_bank,
     }
     implementations = {
         "marketdata": "yahoo-nse-bse",
@@ -262,6 +274,7 @@ def _register_providers(container: Container) -> None:
         ),
         "embeddings": "voyage",
         "aa": "sahamati-aa",
+        "bank": "mock-northstar",
     }
     for name in PROVIDER_REQUIREMENTS:
         missing = settings.missing_env_for_provider(name)
@@ -346,3 +359,9 @@ def _build_aa(container: Container) -> object:
         client_secret=settings.aa_client_secret or "",
         base_url=settings.aa_base_url or "",
     )
+
+
+def _build_bank(_container: Container) -> object:
+    from app.providers.bank.mock import MockNorthstarBank
+
+    return MockNorthstarBank()
