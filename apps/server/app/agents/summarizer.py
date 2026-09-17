@@ -17,7 +17,7 @@ class SummarizerAgent:
             {"title": f.title, "body": f.body, "severity": f.severity.value}
             for f in ctx.findings
         ]
-        user = prompts.summarizer_user(ctx.query, findings, ctx.risk_metrics)
+        user = prompts.summarizer_user(ctx.query, findings, ctx.risk_metrics, ctx.retrieved)
         answer = await ctx.llm.complete(prompts.SUMMARIZER_SYSTEM, user)
         if not isinstance(answer, str):
             answer = str(answer)

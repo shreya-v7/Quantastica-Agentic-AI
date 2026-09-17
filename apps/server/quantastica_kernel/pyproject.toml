@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "quantastica-kernel"
+version = "1.0.0"
+requires-python = ">=3.11"
+dependencies = ["pydantic>=2,<3"]
+
+[tool.setuptools]
+packages = ["quantastica_kernel", "quantastica_kernel.calculators", "quantastica_kernel.calculators.tax_rules", "quantastica_kernel.exceptions"]
+package-dir = {quantastica_kernel = "."}

@@ -1,0 +1,52 @@
+{
+  "name": "quantastica-india-golden",
+  "version": "1.0.0",
+  "description": "Primary eval set. Every numeric expected value is produced by a deterministic calculator, never an LLM.",
+  "cases": [
+    {
+      "id": "tax-new-regime-7l-zero",
+      "kind": "tax",
+      "question": "I earn 7.75 lakh basic. What do I pay under the new regime?",
+      "input": { "basicSalary": 775000 },
+      "expect": {
+        "newRegimeTotalTax": 0,
+        "path": "new_regime.total_tax"
+      }
+    },
+    {
+      "id": "tax-no-deductions-favor-new",
+      "kind": "tax",
+      "question": "Salary 15 lakh, no deductions. Which regime?",
+      "input": { "basicSalary": 1500000 },
+      "expect": { "recommended": "new" }
+    },
+    {
+      "id": "sip-2cr-15y-12pct",
+      "kind": "sip",
+      "question": "What SIP do I need for 2 crore in 15 years at 12 percent?",
+      "input": { "targetInr": 20000000, "years": 15, "annualReturn": 0.12 },
+      "expect": { "monthlySip": 40033.61, "tolerance": 0.5 }
+    },
+    {
+      "id": "sip-zero-return",
+      "kind": "sip",
+      "question": "SIP for 1.2 lakh in 10 years at 0 percent.",
+      "input": { "targetInr": 120000, "years": 10, "annualReturn": 0 },
+      "expect": { "monthlySip": 1000.0, "tolerance": 0.01 }
+    },
+    {
+      "id": "afford-foir-breach",
+      "kind": "affordability",
+      "question": "Can I afford a 1.2 crore house with 20 lakh down and 1.2 lakh monthly income?",
+      "input": {
+        "purchaseCost": 12000000,
+        "downPayment": 2000000,
+        "loanRate": 0.085,
+        "loanYears": 20,
+        "monthlyIncome": 120000,
+        "liquidSavings": 500000
+      },
+      "expect": { "affordable": false }
+    }
+  ]
+}

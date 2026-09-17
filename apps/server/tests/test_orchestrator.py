@@ -29,6 +29,7 @@ async def test_happy_path_completes_with_grounded_findings(container):
     assert [s.name for s in run.steps] == [
         "planner",
         "researcher",
+        "retrieve",
         "risk",
         "insight",
         "summarizer",

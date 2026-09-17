@@ -1,3 +1,7 @@
+See [product.md](product.md) for GTM. See [system-design.md](system-design.md) for the
+target exception control plane (AWS Mumbai, outbox, parse graph). This file is the
+code layout as it runs today.
+
 # Architecture
 
 Quantastica is a monorepo with a FastAPI backend, a React frontend, and a shared types
@@ -17,13 +21,15 @@ Dependencies point downward only. No layer skipping.
    envelope. They contain no business logic.
 2. **services** hold business logic and are the orchestration entry point. They depend on
    the repository and on the agent orchestrator.
-3. **agents** are the Planner, Researcher, Risk, Insight, Summarizer, and the
-   Orchestrator that runs them in order and records the trace.
-4. **infra** is four small interfaces, each with three real implementations:
-   - `repo`: SQLite (local), Firestore (gcp), DynamoDB (aws)
-   - `llm`: Anthropic API (local), Vertex AI (gcp), Bedrock (aws)
-   - `events`: in-process (local), Pub/Sub (gcp), SQS (aws)
-   - `storage`: local disk (local), GCS (gcp), S3 (aws)
+3. **agents** are Planner, Researcher, Retrieve, Risk, Insight, Summarizer, and the
+   LangGraph orchestrator that runs them in order and records the trace. A second
+   ingest graph routes Form 16 / AIS / CAS / text events and pauses on low confidence.
+4. **infra** is small interfaces with real implementations:
+   - `repo`: PostgreSQL 16 + pgvector on every platform
+   - `llm`: Anthropic or Gemini (local), Vertex AI (gcp, frozen for prod), Bedrock (aws, Mumbai target)
+   - `events`: Redis Streams published, no consumer (frozen). Target bus is the Postgres outbox.
+   - `storage`: local disk, GCS, or S3 (prod target S3 in `ap-south-1`)
+   - `rag`: LlamaIndex chunking, hybrid dense + BM25, RRF fusion
 
 ## The factory
 

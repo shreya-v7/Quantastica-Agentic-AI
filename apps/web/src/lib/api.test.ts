@@ -2,8 +2,11 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { ApiClientError, request } from "./api";
 
 function mockFetch(body: unknown, ok = true) {
+  const raw = JSON.stringify(body);
   return vi.fn().mockResolvedValue({
     ok,
+    status: ok ? 200 : 500,
+    text: async () => raw,
     json: async () => body,
   });
 }
@@ -41,6 +44,23 @@ describe("request envelope handling", () => {
       code: "NOT_FOUND",
       message: "Portfolio 'x' not found",
     });
+  });
+
+  it("maps empty responses to a clear NETWORK_ERROR", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: false,
+        status: 502,
+        text: async () => "",
+        json: async () => {
+          throw new Error("no json");
+        },
+      }),
+    );
+    const err = (await request("/health").catch((e) => e)) as ApiClientError;
+    expect(err.code).toBe("NETWORK_ERROR");
+    expect(err.message).toMatch(/make dev/);
   });
 
   it("maps transport failures to NETWORK_ERROR", async () => {

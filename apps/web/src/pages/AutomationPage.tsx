@@ -34,13 +34,13 @@ export function AutomationPage() {
         subtitle="Rules fire only when the master switch is on and stay within server-enforced hard caps you cannot raise."
       />
 
-      <div className="mb-6 flex items-center justify-between rounded-xl border border-ink-200 bg-white px-4 py-3">
+      <div className="mb-6 flex items-center justify-between rounded-lg border border-ink-200 bg-paper-50 px-4 py-3">
         <span className="text-sm text-ink-600">
           Account automation {master ? "enabled" : "disabled"}
         </span>
         <button
           onClick={() => setMasterSwitch.mutate(!master)}
-          className="rounded-lg bg-brand-600 px-3 py-1.5 text-sm font-medium text-white"
+          className="rounded-lg bg-brand-600 px-3 py-1.5 text-sm font-medium text-[rgb(var(--on-accent))]"
         >
           {master ? "Disable" : "Enable"} automation
         </button>
@@ -85,7 +85,7 @@ export function AutomationPage() {
           </select>
           <input name="quantity" type="number" step="any" placeholder="Quantity" className="rounded-lg border border-ink-200 px-3 py-2 text-sm" />
           <input name="maxNotionalInr" type="number" step="any" placeholder="Max notional (INR)" defaultValue={100000} className="rounded-lg border border-ink-200 px-3 py-2 text-sm" />
-          <button className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white md:col-span-2">
+          <button className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-[rgb(var(--on-accent))] md:col-span-2">
             Create rule
           </button>
         </form>

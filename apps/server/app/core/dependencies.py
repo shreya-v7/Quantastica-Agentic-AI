@@ -17,6 +17,8 @@ from app.services.auth_service import AuthService
 from app.services.insight_service import InsightService
 from app.services.portfolio_service import PortfolioService
 
+FIRM_ROLES = ("admin", "adviser", "reviewer", "read_only")
+_ROLE_ALIAS = {"user": "adviser"}
 DEV_USER_ID = "usr_seed_arjun"
 
 
@@ -47,10 +49,27 @@ def current_user_id(claims: dict = Depends(current_claims)) -> str:
     return str(claims["sub"])
 
 
+def _firm_role(claims: dict) -> str:
+    raw = str(claims.get("role") or "user")
+    return _ROLE_ALIAS.get(raw, raw)
+
+
 def require_admin(claims: dict = Depends(current_claims)) -> str:
-    if claims.get("role") != "admin":
+    if _firm_role(claims) != "admin":
         raise ForbiddenError("Admin role required")
     return str(claims["sub"])
+
+
+def require_role(*allowed: str):
+    """Firm RBAC: admin, adviser, reviewer, read_only. Dev `user` maps to adviser."""
+
+    def _dep(claims: dict = Depends(current_claims)) -> str:
+        role = _firm_role(claims)
+        if role not in allowed:
+            raise ForbiddenError(f"Role '{role}' cannot perform this action")
+        return str(claims["sub"])
+
+    return _dep
 
 
 def require_fresh_auth(

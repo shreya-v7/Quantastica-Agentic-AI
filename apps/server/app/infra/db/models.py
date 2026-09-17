@@ -376,7 +376,175 @@ class AgentRunRow(Base):
     data: Mapped[dict[str, Any]] = mapped_column(JSONB)
 
 
+class FirmRow(Base):
+    __tablename__ = "firms"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    name: Mapped[str] = mapped_column(String(255))
+    name_cap: Mapped[float] = mapped_column(Float, default=0.15)
+    sector_cap: Mapped[float] = mapped_column(Float, default=0.40)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+
+
+class HouseholdRow(Base):
+    __tablename__ = "households"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    firm_id: Mapped[str] = mapped_column(ForeignKey("firms.id"), index=True)
+    name: Mapped[str] = mapped_column(String(255))
+    bank_customer_id: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    as_of: Mapped[str] = mapped_column(String(10))
+    tax: Mapped[dict[str, Any] | None] = mapped_column(JSONB, nullable=True)
+    seed: Mapped[bool] = mapped_column(Boolean, default=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+
+
+class LotRow(Base):
+    __tablename__ = "lots"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    firm_id: Mapped[str] = mapped_column(String(64), index=True)
+    household_id: Mapped[str] = mapped_column(
+        ForeignKey("households.id", ondelete="CASCADE"), index=True
+    )
+    symbol: Mapped[str] = mapped_column(String(32), index=True)
+    name: Mapped[str] = mapped_column(String(255))
+    asset_class: Mapped[str] = mapped_column(String(16))
+    sector: Mapped[str] = mapped_column(String(64))
+    quantity: Mapped[Decimal] = mapped_column(Numeric(20, 6))
+    cost: Mapped[Decimal] = mapped_column(Numeric(20, 4))
+    price: Mapped[Decimal] = mapped_column(Numeric(20, 4))
+    acquired_on: Mapped[str] = mapped_column(String(10))
+    fmv_2018: Mapped[Decimal | None] = mapped_column(Numeric(20, 4), nullable=True)
+    seed: Mapped[bool] = mapped_column(Boolean, default=False)
+
+
+class BookEventRow(Base):
+    __tablename__ = "book_events"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    household_id: Mapped[str] = mapped_column(String(64), index=True)
+    event_type: Mapped[str] = mapped_column(String(64))
+    payload: Mapped[dict[str, Any]] = mapped_column(JSONB)
+    seq: Mapped[int] = mapped_column(Integer)
+    idempotency_key: Mapped[str] = mapped_column(String(128), unique=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), index=True)
+
+
+class OutboxRow(Base):
+    __tablename__ = "outbox"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    aggregate_type: Mapped[str] = mapped_column(String(32))
+    aggregate_id: Mapped[str] = mapped_column(String(64), index=True)
+    event_type: Mapped[str] = mapped_column(String(64))
+    payload: Mapped[dict[str, Any]] = mapped_column(JSONB)
+    status: Mapped[str] = mapped_column(String(16), default="pending", index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+
+
+class ProcessedEventRow(Base):
+    __tablename__ = "processed_events"
+
+    consumer: Mapped[str] = mapped_column(String(64), primary_key=True)
+    event_id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    processed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+
+
+class ExceptionRow(Base):
+    __tablename__ = "exceptions"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    household_id: Mapped[str] = mapped_column(String(64), index=True)
+    rule_id: Mapped[str] = mapped_column(String(64), index=True)
+    title: Mapped[str] = mapped_column(Text)
+    rupee_delta: Mapped[float] = mapped_column(Float)
+    due_date: Mapped[str | None] = mapped_column(String(10), nullable=True)
+    severity: Mapped[str] = mapped_column(String(8))
+    metric_ids: Mapped[list[str]] = mapped_column(JSONB)
+    fingerprint: Mapped[str] = mapped_column(String(32), index=True)
+    trace_id: Mapped[str] = mapped_column(String(64))
+    status: Mapped[str] = mapped_column(String(16), default="open")
+    calculator: Mapped[str] = mapped_column(String(64))
+    calculator_version: Mapped[str] = mapped_column(String(32))
+    inputs: Mapped[dict[str, Any]] = mapped_column(JSONB)
+    outputs: Mapped[dict[str, Any]] = mapped_column(JSONB)
+    computed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+
+
+class ExceptionDiffRow(Base):
+    __tablename__ = "exception_diffs"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    household_id: Mapped[str] = mapped_column(String(64), index=True)
+    run_id: Mapped[str] = mapped_column(String(64), index=True)
+    added: Mapped[list[str]] = mapped_column(JSONB)
+    removed: Mapped[list[str]] = mapped_column(JSONB)
+    changed: Mapped[list[str]] = mapped_column(JSONB)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+
+
+class CalculatorRunRow(Base):
+    __tablename__ = "calculator_runs"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    household_id: Mapped[str] = mapped_column(String(64), index=True)
+    exception_id: Mapped[str] = mapped_column(String(64), index=True)
+    calculator: Mapped[str] = mapped_column(String(64))
+    version: Mapped[str] = mapped_column(String(32))
+    inputs: Mapped[dict[str, Any]] = mapped_column(JSONB)
+    outputs: Mapped[dict[str, Any]] = mapped_column(JSONB)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+
+
+class IngestArtifactRow(Base):
+    __tablename__ = "ingest_artifacts"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    household_id: Mapped[str] = mapped_column(String(64), index=True)
+    kind: Mapped[str] = mapped_column(String(32))
+    status: Mapped[str] = mapped_column(String(16), default="pending", index=True)
+    sha256: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    extracted: Mapped[dict[str, Any] | None] = mapped_column(JSONB, nullable=True)
+    missing_fields: Mapped[list[str]] = mapped_column(JSONB, default=list)
+    confidence: Mapped[float] = mapped_column(Float, default=0)
+    thread_id: Mapped[str | None] = mapped_column(String(128), nullable=True, index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+
+
+class GraphCheckpointRow(Base):
+    """Paused ingest / LangGraph thread. Local stand-in for PostgresSaver."""
+
+    __tablename__ = "graph_checkpoints"
+
+    thread_id: Mapped[str] = mapped_column(String(128), primary_key=True)
+    state: Mapped[dict[str, Any]] = mapped_column(JSONB)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+
+
+class ConsentRow(Base):
+    __tablename__ = "consents"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    household_id: Mapped[str] = mapped_column(String(64), index=True)
+    purpose: Mapped[str] = mapped_column(String(64))
+    granted: Mapped[bool] = mapped_column(Boolean, default=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+
+
+class FirmMemberRow(Base):
+    __tablename__ = "firm_members"
+
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    firm_id: Mapped[str] = mapped_column(String(64), index=True)
+    user_id: Mapped[str] = mapped_column(String(64), index=True)
+    role: Mapped[str] = mapped_column(String(16), default="adviser")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+
+
 Index("ix_findings_user_portfolio", FindingRow.user_id, FindingRow.portfolio_id)
 Index("ix_runs_user_portfolio", AgentRunRow.user_id, AgentRunRow.portfolio_id)
 Index("ix_intents_user_status", OrderIntentRow.user_id, OrderIntentRow.status)
 Index("ix_chunks_user_doc", DocumentChunkRow.user_id, DocumentChunkRow.document_id)
+Index("ix_exceptions_hh_status", ExceptionRow.household_id, ExceptionRow.status)
+Index("ix_lots_hh_symbol", LotRow.household_id, LotRow.symbol)

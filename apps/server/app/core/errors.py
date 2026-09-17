@@ -7,24 +7,13 @@ the client.
 
 from __future__ import annotations
 
-
-class AppError(Exception):
-    code: str = "INTERNAL_ERROR"
-    status_code: int = 500
-
-    def __init__(self, message: str):
-        super().__init__(message)
-        self.message = message
+from quantastica_kernel.errors import AppError as AppError
+from quantastica_kernel.errors import ValidationError as ValidationError
 
 
 class NotFoundError(AppError):
     code = "NOT_FOUND"
     status_code = 404
-
-
-class ValidationError(AppError):
-    code = "VALIDATION_ERROR"
-    status_code = 422
 
 
 class LLMError(AppError):

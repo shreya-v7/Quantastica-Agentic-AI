@@ -37,16 +37,16 @@ export function TradesPage() {
     <div>
       <PageHeader
         title="Trades"
-        subtitle="Every order is an intent first. Approve to execute. Paper mode fills against live quotes; live trading is gated."
+        subtitle="Every order is an intent first. Approve to execute. Paper mode is the default. Live trading is gated. Automation on this page is paper-only."
       />
 
-      <div className="mb-6 flex items-center justify-between rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
-        <span className="text-sm text-amber-800">
+      <div className="mb-6 flex items-center justify-between border border-ink-200 bg-paper-50 px-4 py-3">
+        <span className="text-sm text-ink-700">
           Kill switch {killed ? "is ON, trading blocked" : "is off"}
         </span>
         <button
           onClick={() => kill.mutate(!killed)}
-          className="rounded-lg bg-amber-600 px-3 py-1.5 text-sm font-medium text-white"
+          className="bg-pine-600 px-3 py-1.5 text-sm font-medium text-[rgb(var(--on-accent))]"
         >
           {killed ? "Re-enable trading" : "Disable trading"}
         </button>
@@ -91,7 +91,7 @@ export function TradesPage() {
             defaultValue={10}
             className="rounded-lg border border-ink-200 px-3 py-2 text-sm"
           />
-          <button className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white">
+          <button className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-[rgb(var(--on-accent))]">
             Create intent
           </button>
         </form>
@@ -128,7 +128,7 @@ export function TradesPage() {
               <div className="mt-3 flex gap-2">
                 <button
                   onClick={() => execute.mutate(it.id)}
-                  className="rounded-lg bg-brand-600 px-3 py-1.5 text-sm font-medium text-white"
+                  className="rounded-lg bg-brand-600 px-3 py-1.5 text-sm font-medium text-[rgb(var(--on-accent))]"
                 >
                   Approve &amp; execute
                 </button>

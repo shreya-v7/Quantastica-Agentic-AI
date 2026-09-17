@@ -1,49 +1,32 @@
 # Running on AWS
 
-Set `PLATFORM=aws`. The factory wires DynamoDB, Bedrock, SQS, and S3.
+Production target is **Mumbai `ap-south-1`**. See [system-design.md](system-design.md).
+
+Set `PLATFORM=aws`. The factory today wires **Postgres**, Bedrock, Redis, and S3.
+This file previously claimed DynamoDB as the book of record. That is stale. The
+book is Postgres + pgvector everywhere. EventBridge and SQS are the **target**
+bus for exception recompute; they are not wired yet.
 
 ## Required env
 
 | Variable | Purpose |
 |---|---|
-| `AWS_REGION` | Region for all AWS services |
-| `DDB_TABLE_PREFIX` | Prefix for the DynamoDB tables |
-| `SQS_QUEUE_URL` | Queue for run events |
-| `S3_BUCKET` | Bucket for exported run reports |
-| `BEDROCK_MODEL_ID` | For example `anthropic.claude-3-haiku-20240307-v1:0` |
+| `AWS_REGION` | Use `ap-south-1` in production |
+| `S3_BUCKET` | Exported run reports and ingest artifacts |
+| `BEDROCK_MODEL_ID` | In-country Claude id from the Bedrock console |
 
-The repository uses tables named `{DDB_TABLE_PREFIX}_portfolios`,
-`{DDB_TABLE_PREFIX}_holdings`, `{DDB_TABLE_PREFIX}_transactions`,
-`{DDB_TABLE_PREFIX}_findings`, and `{DDB_TABLE_PREFIX}_runs`.
+The book is RDS (or local) Postgres. Do not provision DynamoDB.
 
-## Least privilege IAM policy
+## Least privilege IAM (target)
 
-Scope the role to one table prefix, one queue, one bucket, and one model. No FullAccess.
-Replace `REGION`, `ACCOUNT`, `PREFIX`, `QUEUE`, and `BUCKET`.
+Scope the role to one bucket, one Bedrock model, and later one SQS queue / EventBridge
+bus. No FullAccess. RDS access is via the instance security group and IAM DB auth,
+not DynamoDB.
 
 ```json
 {
   "Version": "2012-10-17",
   "Statement": [
-    {
-      "Sid": "DynamoTables",
-      "Effect": "Allow",
-      "Action": [
-        "dynamodb:GetItem",
-        "dynamodb:PutItem",
-        "dynamodb:DeleteItem",
-        "dynamodb:BatchWriteItem",
-        "dynamodb:Query",
-        "dynamodb:Scan"
-      ],
-      "Resource": "arn:aws:dynamodb:REGION:ACCOUNT:table/PREFIX_*"
-    },
-    {
-      "Sid": "Queue",
-      "Effect": "Allow",
-      "Action": ["sqs:SendMessage"],
-      "Resource": "arn:aws:sqs:REGION:ACCOUNT:QUEUE"
-    },
     {
       "Sid": "Bucket",
       "Effect": "Allow",
@@ -54,27 +37,23 @@ Replace `REGION`, `ACCOUNT`, `PREFIX`, `QUEUE`, and `BUCKET`.
       "Sid": "Model",
       "Effect": "Allow",
       "Action": ["bedrock:InvokeModel"],
-      "Resource": "arn:aws:bedrock:REGION::foundation-model/anthropic.claude-3-haiku-20240307-v1:0"
+      "Resource": "arn:aws:bedrock:ap-south-1::foundation-model/*"
     }
   ]
 }
 ```
 
+Add SQS/EventBridge actions only when the outbox relay is deployed.
+
 ## Credentials
 
-Use the ECS task role or Lambda execution role. Never use static keys in prod.
+Use the ECS task role. Never use static keys in prod.
 
 ## Deploy
 
-1. Backend container (`apps/server/Dockerfile`) to ECS Fargate, or Lambda plus API Gateway
-   via Mangum.
+1. Backend container (`apps/server/Dockerfile`) to ECS Fargate in `ap-south-1`.
 2. Frontend: build with `VITE_API_URL` set, then
    `aws s3 sync apps/web/dist s3://<bucket>` behind CloudFront.
 3. Verify `GET /api/platform`, then run the smoke test against the public URL.
 
-## CI emulator
-
-The DynamoDB implementation is tested in CI against dynamodb-local, selected by the
-`DDB_ENDPOINT_URL` environment variable. `DynamoRepository.ensure_tables` creates the
-tables for the emulator. In production the tables are provisioned by your infrastructure
-and the role does not need `CreateTable`.
+App Runner is Mumbai-only. Prefer Fargate (Mumbai and Hyderabad).

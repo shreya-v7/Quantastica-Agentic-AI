@@ -72,7 +72,7 @@ export function ProfilePage() {
           <label className="flex items-center gap-2 text-sm">
             <input name="metro" type="checkbox" defaultChecked={p.income.metro} /> Metro city
           </label>
-          <button className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white md:col-span-3">
+          <button className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-[rgb(var(--on-accent))] md:col-span-3">
             Save income
           </button>
         </form>
@@ -90,15 +90,15 @@ export function ProfilePage() {
               <p className="mt-1 text-sm text-ink-500">
                 {formatInr(g.savedInr)} of {formatInr(g.targetInr)} by {g.targetDate}
               </p>
-              <div className="mt-2 h-2 w-full rounded-full bg-ink-100">
+              <div className="mt-2 h-1 w-full bg-ink-100">
                 <div
-                  className="h-2 rounded-full bg-brand-600"
+                  className="h-1 bg-pine-600"
                   style={{ width: `${Math.round(g.progress * 100)}%` }}
                 />
               </div>
               <button
                 onClick={() => removeGoal.mutate(g.id)}
-                className="mt-2 text-xs text-red-600"
+                className="mt-2 text-xs text-red-400"
               >
                 Remove
               </button>
@@ -128,7 +128,7 @@ export function ProfilePage() {
             <option value="medium">Medium</option>
             <option value="low">Low</option>
           </select>
-          <button className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white">
+          <button className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-[rgb(var(--on-accent))]">
             Add goal
           </button>
         </form>

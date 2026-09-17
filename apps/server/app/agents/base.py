@@ -11,8 +11,16 @@ from app.schemas.entities import Portfolio as PortfolioModel
 
 
 @dataclass
+class RetrievedPassage:
+    document_id: str
+    content: str
+    score: float = 0.0
+
+
+@dataclass
 class PipelineContext:
     run_id: str
+    user_id: str
     query: str
     portfolio: PortfolioModel
     holdings: list[Holding]
@@ -22,4 +30,5 @@ class PipelineContext:
     metrics: PortfolioMetrics | None = None
     risk_metrics: list[RiskMetric] = field(default_factory=list)
     findings: list[Finding] = field(default_factory=list)
+    retrieved: list[RetrievedPassage] = field(default_factory=list)
     answer: str | None = None

@@ -1,6 +1,9 @@
 # Running on GCP
 
-Set `PLATFORM=gcp`. The factory wires Firestore, Vertex AI, Pub/Sub, and GCS.
+**Frozen for production.** Target cloud is AWS Mumbai. See
+[system-design.md](system-design.md). This page is leftover factory wiring
+(`PLATFORM=gcp` still starts Vertex in local experiments). The factory uses
+Postgres, not Firestore.
 
 ## Required env
 

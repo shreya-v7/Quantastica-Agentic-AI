@@ -56,6 +56,7 @@ PROVIDER_REQUIREMENTS: dict[str, list[str]] = {
     "whatsapp": ["WHATSAPP_TOKEN", "WHATSAPP_PHONE_ID", "WHATSAPP_VERIFY_TOKEN"],
     "embeddings": ["VOYAGE_API_KEY"],
     "aa": ["AA_CLIENT_ID", "AA_CLIENT_SECRET", "AA_BASE_URL"],
+    "bank": [],
 }
 
 MIN_JWT_SECRET_BYTES = 32
@@ -103,6 +104,9 @@ class Settings(BaseSettings):
     # LLM
     anthropic_api_key: str | None = None
     anthropic_model: str = "claude-3-5-haiku-20241022"
+    gemini_api_key: str | None = None
+    gemini_model: str = "gemini-3.6-flash"
+    llm_provider: Literal["auto", "anthropic", "gemini"] = "auto"
     gcp_project: str | None = None
     gcp_region: str | None = None
     vertex_model: str | None = None
@@ -135,6 +139,10 @@ class Settings(BaseSettings):
     aa_base_url: str | None = None
 
     # Trading (paper is the default everywhere; live requires prod + gates)
+    trading_chat_enabled: bool = False
+    voice_enabled: bool = True
+    demo_mode: bool = False
+    sarvam_api_key: str | None = None
     trading_mode: Literal["paper", "live"] = "paper"
     trade_max_order_notional_inr: float = Field(default=500_000.0, gt=0)
     trade_max_daily_notional_inr: float = Field(default=2_000_000.0, gt=0)
@@ -187,13 +195,28 @@ class Settings(BaseSettings):
         return getattr(self, name.lower(), None)
 
     def missing_env_for(self, component: str) -> list[str]:
+        if component == "llm" and self.platform == Platform.local:
+            if self.anthropic_api_key or self.gemini_api_key:
+                return []
+            return ["ANTHROPIC_API_KEY or GEMINI_API_KEY"]
         required = COMPONENT_REQUIREMENTS[component][self.platform]
         return [name for name in required if not self.env_value(name)]
+
+    def local_llm_implementation(self) -> str:
+        if self.llm_provider == "gemini":
+            return "gemini"
+        if self.llm_provider == "anthropic":
+            return "anthropic"
+        if self.gemini_api_key and not self.anthropic_api_key:
+            return "gemini"
+        return "anthropic"
 
     def missing_env_for_provider(self, provider: str) -> list[str]:
         return [name for name in PROVIDER_REQUIREMENTS[provider] if not self.env_value(name)]
 
     def implementation_for(self, component: str) -> str:
+        if component == "llm" and self.platform == Platform.local:
+            return self.local_llm_implementation()
         return IMPLEMENTATION_NAMES[component][self.platform]
 
     @model_validator(mode="after")

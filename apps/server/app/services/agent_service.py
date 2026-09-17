@@ -25,8 +25,18 @@ class AgentService:
             llm=self._container.llm,
             events=self._container.events,
             retries=self._container.settings.llm_retries,
+            retriever=self._retrieve,
         )
         return await orchestrator.run(user_id, portfolio, holdings, transactions, query)
+
+    async def _retrieve(self, user_id: str, query: str):
+        from app.core.errors import ProviderNotConfiguredError
+        from app.services.document_service import DocumentService
+
+        try:
+            return await DocumentService(self._container).retrieve_passages(user_id, query, k=5)
+        except ProviderNotConfiguredError:
+            return []
 
     async def list_runs(self, user_id: str, portfolio_id: str | None = None) -> list[AgentRun]:
         return await self._repo.list_runs(user_id, portfolio_id=portfolio_id)

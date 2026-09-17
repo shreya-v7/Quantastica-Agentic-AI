@@ -18,10 +18,19 @@ setup: ## Install everything: types, web deps, python venv, and .env files
 	$(PIP) install -r apps/server/requirements-dev.txt
 	@test -f apps/server/.env || cp apps/server/.env.example apps/server/.env
 	@test -f apps/web/.env || cp apps/web/.env.example apps/web/.env
-	@echo "Setup complete. Add ANTHROPIC_API_KEY to apps/server/.env, then run 'make seed' and 'make dev'."
+	@echo "Setup complete. Add ANTHROPIC_API_KEY or GEMINI_API_KEY to apps/server/.env, then run 'make seed' and 'make dev'."
+
+.PHONY: eval
+eval: ## Run the India golden eval suite (no live LLM required)
+	cd apps/server && ../../$(PY) -m evals.runner
 
 .PHONY: seed
 seed: ## Load flagged seed data into the local database
+	cd apps/server && ../../$(PY) -m app.seed load
+
+.PHONY: seed-small
+seed-small: ## Write synthgen small bundle and load Northstar Mehta/Rao books
+	PYTHONPATH=apps/server $(PY) -m tools.synthgen --tier small --seed 42
 	cd apps/server && ../../$(PY) -m app.seed load
 
 .PHONY: seed-reset
@@ -42,7 +51,7 @@ test: ## Run backend and frontend tests
 
 .PHONY: lint
 lint: ## Lint backend (ruff) and frontend (eslint)
-	cd apps/server && ../../$(VENV)/bin/ruff check app tests
+	cd apps/server && ../../$(VENV)/bin/ruff check app tests quantastica_kernel kernel_tests
 	npm run lint -w @quantastica/web
 
 .PHONY: typecheck
@@ -62,8 +71,16 @@ build-web: ## Build the web app for production
 	npm run build:web
 
 .PHONY: check
-check: lint typecheck test contract check-emdash ## Run all checks (CI parity)
+check: lint typecheck test contract check-emdash kernel-check ## Run all checks (CI parity)
 
 .PHONY: docker-up
 docker-up: ## Run the full stack with docker compose
 	docker compose up --build
+
+.PHONY: demo kernel-check
+demo: ## Boot the offline proof desk, no database or keys (after setup)
+	cd apps/server && ../../$(PY) -m app.offline_demo $(DEMO_ARGS)
+
+kernel-check: ## Check standalone kernel, replay, and offline demo
+	cd apps/server && ../../$(PY) -m unittest discover -s kernel_tests -v
+	cd apps/server && ../../$(PY) -m app.offline_demo --smoke

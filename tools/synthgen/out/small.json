@@ -1,0 +1,201 @@
+{
+  "tier": "small",
+  "seed": 42,
+  "firms": [
+    {
+      "id": "firm_northstar",
+      "name": "Northstar Private",
+      "synthetic": true
+    }
+  ],
+  "households": [
+    {
+      "id": "hh_mehta",
+      "name": "Karan Mehta",
+      "asOf": "2026-09-16",
+      "tax": {
+        "basic_salary": 3600000.0,
+        "hra_received": 0.0,
+        "other_income": 0.0,
+        "rent_paid": 0.0,
+        "metro_city": true,
+        "deduction_80c": 50000.0,
+        "health_premium_self": 0.0,
+        "nps_80ccd_1b": 0.0,
+        "home_loan_interest": 0.0,
+        "assessment_year": "2025-26"
+      },
+      "lots": [
+        {
+          "id": "lot_cust_hni_mehta_1",
+          "symbol": "RELIANCE.NS",
+          "name": "Reliance Industries",
+          "asset_class": "equity",
+          "sector": "Energy",
+          "quantity": 5000.0,
+          "cost": 2400.0,
+          "price": 2950.0,
+          "acquired_on": "2020-01-15",
+          "fmv_2018": null
+        },
+        {
+          "id": "lot_cust_hni_mehta_2",
+          "symbol": "TCS.NS",
+          "name": "Tata Consultancy Services",
+          "asset_class": "equity",
+          "sector": "Information Technology",
+          "quantity": 2000.0,
+          "cost": 3300.0,
+          "price": 4100.0,
+          "acquired_on": "2025-10-20",
+          "fmv_2018": null
+        },
+        {
+          "id": "lot_cust_hni_mehta_3",
+          "symbol": "INFY.NS",
+          "name": "Infosys",
+          "asset_class": "equity",
+          "sector": "Information Technology",
+          "quantity": 3000.0,
+          "cost": 1350.0,
+          "price": 1820.0,
+          "acquired_on": "2024-01-10",
+          "fmv_2018": null
+        },
+        {
+          "id": "lot_cust_hni_mehta_4",
+          "symbol": "HDFCBANK.NS",
+          "name": "HDFC Bank",
+          "asset_class": "equity",
+          "sector": "Financials",
+          "quantity": 1500.0,
+          "cost": 1480.0,
+          "price": 1650.0,
+          "acquired_on": "2023-06-01",
+          "fmv_2018": null
+        },
+        {
+          "id": "lot_cust_hni_mehta_5",
+          "symbol": "NIFTYBEES.NS",
+          "name": "Nippon India ETF Nifty BeES",
+          "asset_class": "etf",
+          "sector": "Index",
+          "quantity": 10000.0,
+          "cost": 220.0,
+          "price": 260.0,
+          "acquired_on": "2024-08-01",
+          "fmv_2018": null
+        },
+        {
+          "id": "lot_cust_hni_mehta_6",
+          "symbol": "LIQUIDBEES.NS",
+          "name": "Nippon India ETF Liquid BeES",
+          "asset_class": "etf",
+          "sector": "Debt",
+          "quantity": 8000.0,
+          "cost": 1000.0,
+          "price": 1000.0,
+          "acquired_on": "2025-01-01",
+          "fmv_2018": null
+        }
+      ],
+      "exceptions": [
+        {
+          "ruleId": "concentration_tripwire",
+          "rupeeDelta": 8527250.0,
+          "fingerprint": "42e8ea71e5e19b26"
+        },
+        {
+          "ruleId": "concentration_tripwire",
+          "rupeeDelta": 1977250.0,
+          "fingerprint": "00595bd2d31b496b"
+        },
+        {
+          "ruleId": "concentration_tripwire",
+          "rupeeDelta": 1777250.0,
+          "fingerprint": "3b556a393f4a809e"
+        },
+        {
+          "ruleId": "lot_clock",
+          "rupeeDelta": 135625.0,
+          "fingerprint": "eeb4843851ff4fc5"
+        },
+        {
+          "ruleId": "regime_watch",
+          "rupeeDelta": 119600.0,
+          "fingerprint": "9f588344fe47ef52"
+        }
+      ],
+      "synthetic": true,
+      "seed": 42
+    },
+    {
+      "id": "hh_rao",
+      "name": "Ananya Rao",
+      "asOf": "2026-09-16",
+      "tax": {
+        "basic_salary": 1200000.0,
+        "hra_received": 0.0,
+        "other_income": 0.0,
+        "rent_paid": 0.0,
+        "metro_city": true,
+        "deduction_80c": 150000.0,
+        "health_premium_self": 0.0,
+        "nps_80ccd_1b": 50000.0,
+        "home_loan_interest": 0.0,
+        "assessment_year": "2025-26"
+      },
+      "lots": [
+        {
+          "id": "lot_cust_affluent_rao_1",
+          "symbol": "NIFTYBEES.NS",
+          "name": "Nippon India ETF Nifty BeES",
+          "asset_class": "etf",
+          "sector": "Index",
+          "quantity": 2000.0,
+          "cost": 220.0,
+          "price": 260.0,
+          "acquired_on": "2024-08-01",
+          "fmv_2018": null
+        },
+        {
+          "id": "lot_cust_affluent_rao_2",
+          "symbol": "RELIANCE.NS",
+          "name": "Reliance Industries",
+          "asset_class": "equity",
+          "sector": "Energy",
+          "quantity": 80.0,
+          "cost": 2400.0,
+          "price": 2950.0,
+          "acquired_on": "2023-03-01",
+          "fmv_2018": null
+        }
+      ],
+      "exceptions": [
+        {
+          "ruleId": "concentration_tripwire",
+          "rupeeDelta": 406600.0,
+          "fingerprint": "f415c48fc5c53f88"
+        },
+        {
+          "ruleId": "concentration_tripwire",
+          "rupeeDelta": 217600.0,
+          "fingerprint": "1d039878a9603398"
+        },
+        {
+          "ruleId": "concentration_tripwire",
+          "rupeeDelta": 122600.0,
+          "fingerprint": "42e8ea71e5e19b26"
+        },
+        {
+          "ruleId": "regime_watch",
+          "rupeeDelta": 35100.0,
+          "fingerprint": "0c59f406e750f753"
+        }
+      ],
+      "synthetic": true,
+      "seed": 42
+    }
+  ],
+  "note": "Fake PANs and books. Not real people. Mehta and Rao are hand-crafted."
+}

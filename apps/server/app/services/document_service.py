@@ -1,30 +1,17 @@
-"""Document ingestion and retrieval for RAG. Uploaded text is chunked, embedded via the
-embeddings provider, and stored with pgvector. Retrieval is user-scoped cosine search.
+"""Document ingestion and retrieval for RAG.
+
+LlamaIndex sentence-splits uploaded text, Voyage (or a test embedding provider) embeds
+chunks, and Postgres stores them in pgvector. Retrieval is user-scoped hybrid search:
+dense cosine plus BM25, fused with reciprocal rank fusion.
 """
 
 from __future__ import annotations
 
+from app.agents.base import RetrievedPassage
 from app.infra.factory import Container
 from app.infra.repo.document_repo import DocumentRepository
 from app.providers.embeddings.voyage import EmbeddingsProvider
-
-CHUNK_CHARS = 800
-CHUNK_OVERLAP = 100
-
-
-def chunk_text(text: str, size: int = CHUNK_CHARS, overlap: int = CHUNK_OVERLAP) -> list[str]:
-    cleaned = " ".join(text.split())
-    if not cleaned:
-        return []
-    chunks: list[str] = []
-    start = 0
-    while start < len(cleaned):
-        end = min(len(cleaned), start + size)
-        chunks.append(cleaned[start:end])
-        if end == len(cleaned):
-            break
-        start = end - overlap
-    return chunks
+from app.rag.chunking import chunk_text
 
 
 class DocumentService:
@@ -60,6 +47,18 @@ class DocumentService:
         ]
 
     async def retrieve(self, user_id: str, query: str, k: int = 5) -> list[dict]:
+        passages = await self.retrieve_passages(user_id, query, k)
+        return [
+            {"documentId": p.document_id, "content": p.content, "score": p.score}
+            for p in passages
+        ]
+
+    async def retrieve_passages(
+        self, user_id: str, query: str, k: int = 5
+    ) -> list[RetrievedPassage]:
         vectors = await self._embeddings().embed([query])
-        rows = await self._repo.search(user_id, vectors[0], k)
-        return [{"documentId": r.document_id, "content": r.content} for r in rows]
+        rows = await self._repo.search_hybrid(user_id, query, vectors[0], k)
+        return [
+            RetrievedPassage(document_id=r.document_id, content=r.content)
+            for r in rows
+        ]

@@ -38,7 +38,7 @@ class InsightAgent:
         if ctx.metrics is None:
             raise ValueError("Insight agent requires researcher metrics")
         valid_ids = {m.id for m in ctx.risk_metrics}
-        user = prompts.insight_user(ctx.query, ctx.metrics, ctx.risk_metrics)
+        user = prompts.insight_user(ctx.query, ctx.metrics, ctx.risk_metrics, ctx.retrieved)
         drafts = await complete_json(
             ctx.llm, prompts.INSIGHT_SYSTEM, user, InsightDraftList, self._retries
         )
