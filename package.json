@@ -1,0 +1,19 @@
+{
+  "name": "quantastica",
+  "version": "0.0.0",
+  "private": true,
+  "workspaces": ["apps/web", "packages/*"],
+  "scripts": {
+    "build:types": "npm run build -w @quantastica/types",
+    "build:packages": "npm run build:types",
+    "postinstall": "npm run build:packages",
+    "dev:web": "npm run dev -w @quantastica/web",
+    "build:web": "npm run build -w @quantastica/web",
+    "lint:web": "npm run lint -w @quantastica/web",
+    "check:contract": "node check-contract-sync.mjs"
+  },
+  "engines": {
+    "node": ">=20",
+    "npm": ">=7"
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "income": {
+    "userId": "usr_seed_arjun",
+    "basicSalary": 1800000,
+    "hraReceived": 720000,
+    "specialAllowance": 480000,
+    "otherIncome": 60000,
+    "rentPaid": 360000,
+    "metro": true
+  },
+  "cashAccounts": [
+    {"name": "Salary account", "institution": "HDFC Bank", "balanceInr": 850000},
+    {"name": "Savings", "institution": "ICICI Bank", "balanceInr": 350000}
+  ],
+  "deposits": [
+    {"kind": "fd", "institution": "SBI", "principalInr": 500000, "rate": 0.071, "maturityDate": "2027-03-31"}
+  ],
+  "retirementAccounts": [
+    {"kind": "epf", "balanceInr": 1250000, "annualContributionInr": 216000},
+    {"kind": "ppf", "balanceInr": 800000, "annualContributionInr": 150000},
+    {"kind": "nps", "balanceInr": 450000, "annualContributionInr": 50000}
+  ],
+  "mfFolios": [
+    {"schemeCode": "120503", "schemeName": "Axis Bluechip Fund Direct Growth", "units": 1850.25, "sipAmountInr": 25000, "sipDay": 5},
+    {"schemeCode": "118989", "schemeName": "Parag Parikh Flexi Cap Direct Growth", "units": 920.5, "sipAmountInr": 15000, "sipDay": 10}
+  ],
+  "debts": [
+    {"loanType": "home", "lender": "HDFC Bank", "principalOutstandingInr": 4200000, "rate": 0.087, "emiInr": 41000, "tenureMonths": 168, "annualInterestInr": 360000}
+  ],
+  "insurancePolicies": [
+    {"policyType": "term", "provider": "HDFC Life", "coverInr": 20000000, "annualPremiumInr": 22000, "termYears": 30},
+    {"policyType": "health", "provider": "Star Health", "coverInr": 1000000, "annualPremiumInr": 28000, "termYears": 1}
+  ],
+  "expenses": [
+    {"category": "Household", "monthlyInr": 60000},
+    {"category": "Rent", "monthlyInr": 30000},
+    {"category": "Transport", "monthlyInr": 12000}
+  ],
+  "goals": [
+    {"name": "Child education", "targetInr": 20000000, "targetDate": "2038-06-01", "priority": "high", "savedInr": 2500000},
+    {"name": "Retirement corpus", "targetInr": 80000000, "targetDate": "2050-01-01", "priority": "medium", "savedInr": 3750000}
+  ]
+}

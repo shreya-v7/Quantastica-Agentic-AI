@@ -1,0 +1,204 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root,
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --paper-50: 12 16 24;
+  --paper-100: 6 8 14;
+  --paper-200: 22 28 40;
+  --paper-300: 96 108 128;
+  --ink-50: 14 18 28;
+  --ink-100: 20 26 38;
+  --ink-200: 38 48 66;
+  --ink-400: 108 120 140;
+  --ink-500: 140 152 170;
+  --ink-600: 172 182 196;
+  --ink-700: 204 212 222;
+  --ink-800: 226 232 240;
+  --ink-900: 238 242 248;
+  --pine-50: 8 16 42;
+  --pine-100: 10 22 58;
+  --pine-500: 47 99 232;
+  --pine-600: 28 62 188;
+  --pine-700: 20 46 140;
+  --volt: 72 122 245;
+  --on-accent: 238 242 248;
+  --line: rgba(47, 99, 232, 0.28);
+  --glow: rgba(28, 62, 188, 0.22);
+  --glow-sm: rgba(28, 62, 188, 0.12);
+  --glow-volt: transparent;
+  --grid: rgba(47, 99, 232, 0.07);
+  --wash: rgba(28, 62, 188, 0.2);
+  --scan: rgba(47, 99, 232, 0.06);
+  --frame-bg: rgba(10, 14, 22, 0.88);
+  --hud: rgba(255, 255, 255, 0.02);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --paper-50: 255 255 255;
+  --paper-100: 244 246 249;
+  --paper-200: 214 222 232;
+  --paper-300: 90 104 122;
+  --ink-50: 232 238 246;
+  --ink-100: 220 228 238;
+  --ink-200: 176 188 206;
+  --ink-400: 90 104 122;
+  --ink-500: 70 84 102;
+  --ink-600: 48 60 78;
+  --ink-700: 32 42 58;
+  --ink-800: 20 28 40;
+  --ink-900: 12 18 28;
+  --pine-50: 226 234 252;
+  --pine-100: 204 218 248;
+  --pine-500: 24 62 196;
+  --pine-600: 18 48 164;
+  --pine-700: 14 38 128;
+  --volt: 36 78 210;
+  --on-accent: 244 246 249;
+  --line: rgba(24, 62, 196, 0.2);
+  --glow: rgba(18, 48, 164, 0.1);
+  --glow-sm: rgba(18, 48, 164, 0.06);
+  --glow-volt: transparent;
+  --grid: rgba(24, 62, 196, 0.07);
+  --wash: rgba(24, 62, 196, 0.08);
+  --scan: rgba(24, 62, 196, 0.05);
+  --frame-bg: rgba(255, 255, 255, 0.92);
+  --hud: rgba(12, 18, 28, 0.02);
+}
+
+@layer base {
+  html {
+    font-family: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+    background: rgb(var(--paper-100));
+    color: rgb(var(--ink-900));
+    font-feature-settings: "ss01" 1, "kern" 1, "tnum" 1;
+  }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    letter-spacing: -0.012em;
+    background-color: rgb(var(--paper-100));
+    background-image:
+      radial-gradient(900px 380px at 50% -20%, var(--wash), transparent 70%),
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: auto, 40px 40px, 40px 40px;
+    background-position: center, -1px -1px, -1px -1px;
+  }
+  ::selection {
+    background: rgb(var(--pine-600));
+    color: rgb(var(--on-accent));
+  }
+  input,
+  textarea,
+  select {
+    background-color: rgb(var(--paper-50));
+    color: rgb(var(--ink-900));
+    border-color: rgb(var(--ink-200));
+    border-radius: 0;
+  }
+  input:focus,
+  textarea:focus,
+  select:focus {
+    outline: none;
+    border-color: rgb(var(--pine-600));
+    box-shadow: 0 0 0 1px rgb(var(--pine-600));
+  }
+  input::placeholder,
+  textarea::placeholder {
+    color: rgb(var(--ink-400));
+  }
+}
+
+@layer components {
+  .field {
+    @apply w-full border border-ink-200 bg-paper-50 px-3 py-2.5 text-sm text-ink-900;
+  }
+
+  .btn-cut {
+    clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+    color: rgb(var(--on-accent));
+  }
+
+  .text-neon {
+    color: rgb(var(--pine-500));
+  }
+
+  .frame {
+    position: relative;
+    background: var(--frame-bg);
+    border: 1px solid var(--line);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, rgb(var(--paper-100)) 70%, transparent);
+  }
+
+  .frame-c {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-color: rgb(var(--pine-500));
+    pointer-events: none;
+  }
+  .frame-c-tl {
+    top: -1px;
+    left: -1px;
+    border-top: 1px solid;
+    border-left: 1px solid;
+  }
+  .frame-c-tr {
+    top: -1px;
+    right: -1px;
+    border-top: 1px solid;
+    border-right: 1px solid;
+  }
+  .frame-c-bl {
+    bottom: -1px;
+    left: -1px;
+    border-bottom: 1px solid;
+    border-left: 1px solid;
+  }
+  .frame-c-br {
+    bottom: -1px;
+    right: -1px;
+    border-bottom: 1px solid;
+    border-right: 1px solid;
+  }
+
+  .frame-k {
+    position: absolute;
+    top: 8px;
+    left: 14px;
+    background: rgb(var(--paper-100));
+    padding: 0 8px;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgb(var(--pine-500));
+  }
+
+  .scan-mask {
+    position: relative;
+    overflow: hidden;
+  }
+  .scan-mask::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(to bottom, transparent 0%, var(--scan) 50%, transparent 100%);
+    height: 42%;
+    animation: scan 7s linear infinite;
+  }
+
+  .hud-line {
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent,
+      transparent 2px,
+      var(--hud) 3px
+    );
+  }
+}

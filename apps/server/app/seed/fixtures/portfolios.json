@@ -1,0 +1,18 @@
+[
+  {
+    "id": "pf_tech_heavy",
+    "ownerId": "usr_seed_arjun",
+    "name": "AI & Tech Growth (NSE)",
+    "baseCurrency": "INR",
+    "createdAt": "2024-01-02T00:00:00+05:30",
+    "seed": true
+  },
+  {
+    "id": "pf_balanced",
+    "ownerId": "usr_seed_arjun",
+    "name": "Balanced India",
+    "baseCurrency": "INR",
+    "createdAt": "2024-01-02T00:00:00+05:30",
+    "seed": true
+  }
+]

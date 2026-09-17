@@ -1,0 +1,11 @@
+[
+  {
+    "id": "usr_seed_arjun",
+    "email": "arjun.seed@example.in",
+    "role": "user",
+    "phone": "+919800000001",
+    "phoneVerified": true,
+    "createdAt": "2024-01-01T00:00:00+05:30",
+    "seed": true
+  }
+]

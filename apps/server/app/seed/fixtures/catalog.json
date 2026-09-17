@@ -1,0 +1,134 @@
+[
+  {
+    "id": "loan_home_sbi",
+    "kind": "loan",
+    "provider": "State Bank of India",
+    "name": "SBI Home Loan (Regular)",
+    "attributes": {
+      "loanType": "home",
+      "minRate": 0.0850,
+      "maxRate": 0.0945,
+      "maxTenureYears": 30,
+      "maxLtv": 0.80,
+      "minIncomeMonthly": 25000,
+      "processingFeePct": 0.0035,
+      "maxFoir": 0.55
+    },
+    "seed": true
+  },
+  {
+    "id": "loan_home_hdfc",
+    "kind": "loan",
+    "provider": "HDFC Bank",
+    "name": "HDFC Home Loan",
+    "attributes": {
+      "loanType": "home",
+      "minRate": 0.0875,
+      "maxRate": 0.0960,
+      "maxTenureYears": 30,
+      "maxLtv": 0.80,
+      "minIncomeMonthly": 30000,
+      "processingFeePct": 0.0050,
+      "maxFoir": 0.50
+    },
+    "seed": true
+  },
+  {
+    "id": "loan_personal_icici",
+    "kind": "loan",
+    "provider": "ICICI Bank",
+    "name": "ICICI Personal Loan",
+    "attributes": {
+      "loanType": "personal",
+      "minRate": 0.1075,
+      "maxRate": 0.1850,
+      "maxTenureYears": 6,
+      "maxLtv": 1.0,
+      "minIncomeMonthly": 30000,
+      "processingFeePct": 0.0200,
+      "maxFoir": 0.50
+    },
+    "seed": true
+  },
+  {
+    "id": "loan_car_axis",
+    "kind": "loan",
+    "provider": "Axis Bank",
+    "name": "Axis Car Loan",
+    "attributes": {
+      "loanType": "car",
+      "minRate": 0.0890,
+      "maxRate": 0.1300,
+      "maxTenureYears": 8,
+      "maxLtv": 0.85,
+      "minIncomeMonthly": 20000,
+      "processingFeePct": 0.0100,
+      "maxFoir": 0.50
+    },
+    "seed": true
+  },
+  {
+    "id": "ins_term_licdigi",
+    "kind": "insurance",
+    "provider": "LIC",
+    "name": "LIC Digi Term",
+    "attributes": {
+      "insuranceType": "term",
+      "coverMin": 2500000,
+      "coverMax": 50000000,
+      "entryAgeMin": 18,
+      "entryAgeMax": 65,
+      "annualPremiumPerLakh": 120,
+      "smokerLoadingPct": 0.40
+    },
+    "seed": true
+  },
+  {
+    "id": "ins_term_hdfclife",
+    "kind": "insurance",
+    "provider": "HDFC Life",
+    "name": "HDFC Life Click 2 Protect",
+    "attributes": {
+      "insuranceType": "term",
+      "coverMin": 5000000,
+      "coverMax": 100000000,
+      "entryAgeMin": 18,
+      "entryAgeMax": 65,
+      "annualPremiumPerLakh": 110,
+      "smokerLoadingPct": 0.45
+    },
+    "seed": true
+  },
+  {
+    "id": "ins_health_star",
+    "kind": "insurance",
+    "provider": "Star Health",
+    "name": "Star Comprehensive Health",
+    "attributes": {
+      "insuranceType": "health",
+      "coverMin": 500000,
+      "coverMax": 10000000,
+      "entryAgeMin": 18,
+      "entryAgeMax": 65,
+      "annualPremiumPerLakh": 900,
+      "familyFloaterDiscountPct": 0.15
+    },
+    "seed": true
+  },
+  {
+    "id": "ins_health_nivabupa",
+    "kind": "insurance",
+    "provider": "Niva Bupa",
+    "name": "Niva Bupa ReAssure",
+    "attributes": {
+      "insuranceType": "health",
+      "coverMin": 300000,
+      "coverMax": 30000000,
+      "entryAgeMin": 18,
+      "entryAgeMax": 65,
+      "annualPremiumPerLakh": 850,
+      "familyFloaterDiscountPct": 0.18
+    },
+    "seed": true
+  }
+]

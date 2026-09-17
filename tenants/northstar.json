@@ -1,0 +1,7 @@
+{
+  "tenant_id": "firm_northstar",
+  "name": "Northstar Private",
+  "segment": "wealth",
+  "employers": ["Northstar Labs Pvt Ltd"],
+  "layout_pack": "northstar-form16-v1"
+}
